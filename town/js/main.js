@@ -16,7 +16,7 @@ import { registerOccupancy, buildRoads, buildLots, buildTrees, buildCars,
          buildRain,
          buildCountryside, buildFences, buildClouds, buildBirds, buildMountains,
          buildContactShadows, tickWorld } from './details.js';
-import { grassTexture, mat, plane, cyl, R, rr, pick, skyTexture, mergeStatic,
+import { grassTexture, mat, plane, cyl, R, rr, pick, skyTexture, mergeStatic, splitInstanced,
          groundOverlayTexture, detailNoiseTexture, attachDriftShadow, uTime, WATERFX, RUNENV,
          DETAIL } from './lib.js';
 import { M_GRASS, pbr, texReport } from './mats.js';
@@ -52,6 +52,11 @@ const TC = TIER_CFG[TIER];
    must be set before any builder runs below */
 DETAIL.f = TC.detail ?? 1;
 const MIN = TIER === 'min';
+const ULTRA = TIER === 'ultra';
+/* chunked map loading: min/low/med distance-cull whole cells;
+   high + ultra always keep every chunk */
+const CULL = TIER === 'min' || TIER === 'low' || TIER === 'med';
+const CULL_BASE = { min: 300, low: 360, med: 520 };   // street-level radii
 
 /* ---------- renderer ---------- */
 const renderer = new THREE.WebGLRenderer({ antialias: false,
@@ -235,8 +240,9 @@ if (TIME === 'golden' || TIME === 'dusk' || TIME === 'night')
   lampIM.material.emissiveIntensity = TIME === 'night' ? 1.9 : 1.4;
 buildTrees(scene);
 buildCars(scene);
-buildTraffic(scene);
-buildPeople(scene);
+/* MIN: no moving traffic or pedestrians — parked cars remain as static
+   set-dressing (merged cells), tickWorld null-guards the absent systems */
+if (!MIN) { buildTraffic(scene); buildPeople(scene); }
 buildFences(scene);
 buildCountryside(scene);
 buildMountains(scene);
@@ -284,14 +290,33 @@ for (const a of [.62, -.62]) {
 scene.add(plane(190, 6, qp, -480, .33, -532, -Math.PI / 2, 3));
 scene.add(cyl(4, 4.4, .9, mat('#9aa0a3'), -480, .3, -532, 20));
 
-/* collapse all static geometry into one mesh per material */
+/* collapse all static geometry into one mesh per material per cell —
+   street views frustum-cull far cells, and MIN distance-culls whole cells.
+   MIN uses 160m cells (finer radius granularity); other tiers use 320m. */
 const _tm = performance.now();
-mergeStatic(scene);
+const CHUNK = MIN ? 160 : 320;
+const MERGED = mergeStatic(scene, { chunk: CHUNK });
+/* every chunk-cullable object: merged cells on all tiers; on MIN the big
+   static instanced scatter (trees/grass/litter/furniture) is also rebucketed
+   into cells so it drops out with distance like the merged geometry */
+const CHUNKS = [...MERGED.children];
+if (CULL) {
+  const tagged = [];
+  scene.traverse(o => { if (o.isInstancedMesh && o.userData.staticInst) tagged.push(o); });
+  for (const im of tagged) {
+    const grp = splitInstanced(im, CHUNK);
+    grp.position.copy(im.position); grp.quaternion.copy(im.quaternion);
+    grp.scale.copy(im.scale); grp.matrixAutoUpdate = im.matrixAutoUpdate;
+    im.parent.add(grp); im.parent.remove(im);
+    CHUNKS.push(...grp.children);
+  }
+  (window.__prof ||= []).push(['chunkSplit', tagged.length]);
+}
 
 /* presentation layer — budget tracker, facility directory, info cards, tour
    (independent of ?labels: the directory/cards work either way) */
 installUI();
-document.getElementById('uiTier').textContent = TIER.toUpperCase();
+document.getElementById('uiTier').textContent = 'PERF ' + TIER.toUpperCase();
 (window.__prof ||= []).push(['mergeStatic', Math.round(performance.now() - _tm)]);
 
 /* lit windows + material-upgrade pass on the shared cached materials:
@@ -564,7 +589,7 @@ const POST = !NOFX && TIER !== 'low' && TIER !== 'min';
 if (POST) {
   pipe = createPipeline(renderer, scene, activeCam,
     { time: TIME, ao: !NOAO && TC.ao, pixelRatio, msaa: msaaSamples,
-      skip: skipSet.size ? skipSet : null });
+      aoHi: ULTRA, skip: skipSet.size ? skipSet : null });
   composer = pipe.composer;
 }
 
@@ -734,6 +759,22 @@ function tick() {
   const inside = !!(interior && interior.on);
   if (!inside) tickWorld(t, dt);
   if (occluderCull && !inside) occluderCull.tick(activeCam);
+  /* min/low/med: distance-cull whole merge cells by their baked bounds.
+     Radius grows with altitude so the aerial keeps the town intact while
+     a street camera drops most of the static world; high/ultra keep all. */
+  if (CULL && (frames % 10) === 0) {
+    const r = Math.max(CULL_BASE[TIER] || 300, activeCam.position.y * 3.0), r2 = r * r;
+    const px = activeCam.position.x, pz = activeCam.position.z;
+    /* bounds-overlap test: each chunk is hidden only when its real baked
+       bounds clear the radius — town-spanning geometry never drops out
+       under the camera even when its cell centre is far away */
+    for (const m of CHUNKS) {
+      const b = m.userData.cb;
+      const dx = Math.max(b.x0 - px, px - b.x1, 0);
+      const dz = Math.max(b.z0 - pz, pz - b.z1, 0);
+      m.visible = dx * dx + dz * dz < r2;
+    }
+  }
   if (composer) {
     if (composer.passes[0] && composer.passes[0].camera !== activeCam) {
       composer.passes[0].camera = activeCam;

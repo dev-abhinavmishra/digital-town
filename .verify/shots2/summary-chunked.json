@@ -1,0 +1,28 @@
+{
+  "branch": "devin/1790705124-min-chunked-budget",
+  "feature": "chunked merge cells + MIN-tier distance culling",
+  "console_errors": 0,
+  "results": {
+    "min_tier_flag": "PASS — #uiTier='MIN'; __prof has ['minSplit',82] and ['mergeStatic',399]",
+    "chunk_spacing_min": "PASS — cell centres spaced 160m (vs 320 on other tiers)",
+    "culler_street": "PASS — cam(-150,7,-34) r=300: 585 visible / 2844 hidden of 3429 (~83% culled), zero invariant violations",
+    "culler_recenter": "PASS — after ~350m fly, cam(200,7,-65): 508 visible, zero violations — culler re-centers correctly",
+    "culler_third_pos": "PASS — cam(120,9,-52): 573 visible, zero violations",
+    "near_field": "PASS — street + long-view screenshots show intact buildings/road/props; no holes inside ~250m. (1450 hidden cells have bounding boxes reaching <250m — bbox artefacts of large world-baked pieces like ground overlays; actual near-field pixels are complete)",
+    "min_aerial": "PASS — cam(540,620,660) r=1860: 3220/3429 visible (209 hidden are >1860m countryside chunks); whole town renders",
+    "min_mid_altitude": "PASS — y150 → r=450: 768 visible; radius shrinks with altitude, transitions blend into countryside/mountains",
+    "min_perf": "street ~230k tris / ~200 calls / ~20fps; mid-descent 230,426 tris / 200 calls / 20fps",
+    "high_regression": "PASS — #uiTier='HIGH'; __prof no minSplit; 1226 cells @320m ALL visible (culler inert); 680 calls / 2.97M tris / 24.7fps; full street scene w/ shadows+traffic",
+    "interior_on_min": "PASS — click hospital facade → 'medical' interior, panel/hint/EXIT all present; ESC restores exact preset (240,90,-300), HUD gone. (Note: PR#43's re-entry pose bug still exists — first entry per page is clean)"
+  },
+  "screenshots": {
+    "m1-min-street": "street view intact, mountains backdrop",
+    "m1b/m1c-fly": "mid-flight + destination frames on Main St",
+    "m1d-longview": "long view down Main St — cull boundary blends into countryside",
+    "m2-min-aerial": "whole town from altitude",
+    "m3-min-mid / m3b-descent": "mid-altitude + descent frames",
+    "m4-high-street": "regression high-tier street",
+    "m5-min-interior / m6-min-exit": "interior on min + restored aerial"
+  },
+  "recording": "C:\\Users\\Administrator\\screencasts\\rec-d9491737-512e-449f-9231-af52b886f5e5\\rec-d9491737-512e-449f-9231-af52b886f5e5-edited.mp4"
+}

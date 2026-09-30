@@ -52,7 +52,7 @@ function gpuName() {
 export function savedTier() {
   try {
     const v = localStorage.getItem(TIER_KEY);
-    return v === 'high' || v === 'med' || v === 'low' || v === 'min' ? v : null;
+    return v === 'ultra' || v === 'high' || v === 'med' || v === 'low' || v === 'min' ? v : null;
   } catch { return null; }
 }
 export function setTierPref(v) {
@@ -62,12 +62,12 @@ export function setTierPref(v) {
   } catch {}
 }
 
-const TIER_ORD = { min: 0, low: 1, med: 2, high: 3 };
+const TIER_ORD = { min: 0, low: 1, med: 2, high: 3, ultra: 4 };
 const lower = (a, b) => TIER_ORD[a] <= TIER_ORD[b] ? a : b;
 
 export function pickTier(params) {
   const q = (params.get('q') || params.get('quality') || '').toLowerCase();
-  if (q === 'high' || q === 'med' || q === 'medium' || q === 'low' || q === 'min')
+  if (q === 'ultra' || q === 'high' || q === 'med' || q === 'medium' || q === 'low' || q === 'min')
     return q === 'medium' ? 'med' : q;
 
   let pick = savedTier();
@@ -93,10 +93,14 @@ export function pickTier(params) {
 
 /* per-tier budget. HIGH reproduces the previous pipeline verbatim. */
 export const TIER_CFG = {
+  /* ULTRA — everything on max: 8K adaptive shadow box, 8x MSAA, up to 3x
+     pixels, deep GTAO (32 samples, hotter blend), shadowed interiors */
+  ultra:{ maxRatio: 3,   msaa: 8, ao: true,  bloom: true, smaa: true,  shadow: 8192, detail: 1 },
   high: { maxRatio: 2,   msaa: 4, ao: true,  bloom: true, smaa: true,  shadow: 4096, detail: 1 },
   med:  { maxRatio: 1.5, msaa: 2, ao: false, bloom: true, smaa: true,  shadow: 2048, detail: 1 },
   low:  { maxRatio: 1,   msaa: 0, ao: false, bloom: false, smaa: true,  shadow: 1024, detail: 1 },
   /* thinned scene for devices that cannot rasterize the full town —
-     ~22% of scattered instanced content, no shadow pass, .6x pixels */
-  min:  { maxRatio: .6,  msaa: 0, ao: false, bloom: false, smaa: false, shadow: 0,    detail: .22 },
+     ~12% of scattered instanced content + 320m-chunk distance culling in
+     main.js, no shadow pass, .6x pixels */
+  min:  { maxRatio: .6,  msaa: 0, ao: false, bloom: false, smaa: false, shadow: 0,    detail: .12 },
 };

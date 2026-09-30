@@ -260,6 +260,7 @@ export function buildYards(scene) {
       fol.setColorAt(i, col);
     });
     fol.castShadow = fol.receiveShadow = true;
+    fol.userData.staticInst = true;
     scene.add(fol);
   }
   CITY.yards = stats;

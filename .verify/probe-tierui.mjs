@@ -15,15 +15,15 @@ await page.waitForFunction('window.__ready === true', null, { timeout: 900000 })
 
 const r = await page.evaluate(async () => {
   const chip = document.getElementById('uiTier');
-  const menu = document.getElementById('uiTierMenu');
-  const out = { chip: chip && chip.textContent, menuExists: !!menu, auto: null, picked: null, after: null };
-  if (!menu) return out;
+  const guide = document.getElementById('uiGuide');
+  const out = { chip: chip && chip.textContent, guideExists: !!guide, auto: null, picked: null, after: null };
+  if (!guide) return out;
   chip.click();
-  out.opened = menu.classList.contains('open');
-  out.auto = menu.querySelector('.t.on')?.textContent.trim() || null;
+  out.opened = guide.classList.contains('open');
+  out.running = document.getElementById('uiGuideRun')?.textContent || null;
+  out.auto = guide.querySelector('.tr.on')?.dataset.q || null;
   // pick LOW
-  const items = [...menu.querySelectorAll('.t')];
-  const low = items.find(el => /LOW/.test(el.textContent));
+  const low = [...guide.querySelectorAll('.tr')].find(el => el.dataset.q === 'low');
   low.click();
   out.picked = localStorage.getItem('dt_q');
   return out;

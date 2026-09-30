@@ -39,7 +39,7 @@ try {
   } else if (cmd === 'eval') {
     console.log('EVAL', JSON.stringify(await page.evaluate(arg)));
   } else if (cmd === 'shot') {
-    await page.screenshot({ path: `${OUT}/${arg}.png` });
+    await page.screenshot({ path: `${OUT}/${arg}.png`, timeout: 120000 });
     console.log('SHOT', arg);
   } else if (cmd === 'click') {
     await page.click(arg);

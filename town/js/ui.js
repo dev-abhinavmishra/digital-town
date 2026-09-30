@@ -30,23 +30,35 @@ const css = `
 #uiBudget.open .sub { display:block; }
 #uiBudget .sub .k { color:#cdd7dd; }
 #uiBtns { display:flex; gap:7px; }
-#uiTier { font-size:9px; letter-spacing:1.4px; color:rgba(255,255,255,.38);
-  text-align:right; padding:3px 2px 0; user-select:none; cursor:pointer; }
-#uiTier:hover { color:rgba(255,255,255,.7); }
-#uiTierMenu { position:fixed; right:14px; top:150px; z-index:48; width:190px;
-  background:rgba(11,15,19,.95); border:1px solid rgba(255,255,255,.14);
-  border-radius:12px; padding:8px; color:#e8ecef; backdrop-filter:blur(10px);
-  display:none; box-shadow:0 10px 30px rgba(0,0,0,.5); }
-#uiTierMenu.open { display:block; }
-#uiTierMenu h5 { margin:2px 6px 6px; font-size:9.5px; letter-spacing:1.4px;
-  color:#7d929e; font-weight:600; }
-#uiTierMenu .t { display:flex; justify-content:space-between; align-items:baseline;
-  gap:8px; padding:7px 8px; border-radius:8px; cursor:pointer; font-size:11.5px;
-  font-weight:700; letter-spacing:.8px; }
-#uiTierMenu .t span { font-size:9.5px; font-weight:400; color:#8fa1ab; letter-spacing:0; }
-#uiTierMenu .t:hover { background:rgba(255,255,255,.07); }
-#uiTierMenu .t.on { background:rgba(110,160,220,.16); }
-#uiTierMenu .t.on::after { content:'\\2713'; color:#9ec3ec; font-size:10px; }
+#uiTier { font-size:10px; letter-spacing:1px; color:#cfe0ea; text-align:right;
+  padding:5px 10px; user-select:none; cursor:pointer; background:rgba(16,22,26,.82);
+  border:1px solid rgba(255,255,255,.16); border-radius:8px; backdrop-filter:blur(6px);
+  box-shadow:0 2px 10px rgba(0,0,0,.3); }
+#uiTier:hover { background:rgba(30,42,50,.9); color:#fff; }
+#uiGuide { position:fixed; inset:0; display:none; z-index:60; background:rgba(5,8,10,.72);
+  align-items:center; justify-content:center; }
+#uiGuide.open { display:flex; }
+#uiGuide .panel { width:min(680px, 94vw); max-height:86vh; overflow-y:auto;
+  background:rgba(13,19,23,.97); border:1px solid rgba(255,255,255,.16);
+  border-radius:16px; padding:26px 30px; color:#e8ecef; }
+#uiGuide h2 { margin:0 0 4px; font-size:19px; }
+#uiGuide h4 { font-size:10.5px; letter-spacing:1px; color:#7d929e; margin:16px 0 6px;
+  text-transform:uppercase; }
+#uiGuide .tagline { color:#93a4ae; font-size:12.5px; }
+#uiGuide table.g { width:100%; border-collapse:collapse; font-size:12.5px; }
+#uiGuide table.g td { padding:5px 8px 5px 0; border-bottom:1px solid rgba(255,255,255,.07);
+  color:#c6d1d8; vertical-align:top; }
+#uiGuide table.g td:first-child { color:#9fb0ba; white-space:nowrap; font-weight:600; width:118px; }
+#uiGuide .tr { display:flex; align-items:baseline; gap:10px; padding:8px 10px;
+  border-radius:9px; cursor:pointer; border:1px solid transparent; }
+#uiGuide .tr:hover { background:rgba(255,255,255,.06); }
+#uiGuide .tr.on { background:rgba(110,160,220,.14); border-color:rgba(110,160,220,.35); }
+#uiGuide .tr .nm { font-weight:700; font-size:12.5px; letter-spacing:.8px; width:52px; flex:none; }
+#uiGuide .tr .ft { flex:1; font-size:11.5px; color:#9fb0ba; line-height:1.45; }
+#uiGuide .tr .bdg { flex:none; font-size:9px; letter-spacing:1px; color:#5fd08a; }
+#uiGuide .tr.on .bdg::before { content:'\\2713 '; }
+#uiGuide .close { float:right; cursor:pointer; color:#8a99a3; font-size:18px; }
+#uiGuide .note { font-size:10.5px; color:#7d929e; margin-top:8px; }
 #uiTour { position:fixed; left:14px; bottom:14px; z-index:41; }
 #uiDrawer { position:fixed; top:64px; right:-340px; width:320px; height:calc(100% - 64px); z-index:45;
   background:rgba(11,15,19,.94); border-left:1px solid rgba(255,255,255,.12);
@@ -139,14 +151,30 @@ export function installUI() {
         <div class="btn" id="uiBtnDir">&#8801; FACILITIES</div>
         <div class="btn" id="uiBtnTour">&#9654; TOUR</div>
         <div class="btn" id="uiBtnRubric">&#10003; PROJECT BRIEF</div>
+        <div class="btn" id="uiBtnGuide">&#9432; GUIDE</div>
       </div>
-      <div id="uiTier" title="Active render-quality tier — click to change"></div>
-      <div id="uiTierMenu"><h5>RENDER QUALITY</h5></div>
+      <div id="uiTier" title="Render quality — click to change"></div>
     </div>
     <div id="uiDrawer"><h2>${TOWN.name} — FACILITY DIRECTORY
       <span id="uiDrawerX" style="float:right;cursor:pointer;color:#8a99a3">&times;</span></h2></div>
     <div id="uiCard"></div>
     <div id="uiTourBar"></div>
+    <div id="uiGuide"><div class="panel">
+      <span class="close" id="uiGuideX">&times;</span>
+      <h2>${TOWN.name} — Guide</h2>
+      <div class="tagline">How to explore the town — and how to tune render quality for your device.</div>
+      <h4>Getting around</h4>
+      <table class="g">
+        <tr><td>Fly</td><td>Drag to look &middot; WASD move &middot; Q/E down/up &middot; Shift = fast &middot; wheel = speed &middot; double-click = orbit</td></tr>
+        <tr><td>Visit a facility</td><td>Click its map label, or pick it in FACILITIES — the camera flies there</td></tr>
+        <tr><td>Step inside</td><td>Click the building itself (or &#8220;step inside&#8221; on its card) — WASD to walk, Esc to leave</td></tr>
+        <tr><td>Guided tour</td><td>TOUR plays an 8-stop narrated route explaining why each facility sits where it does</td></tr>
+        <tr><td>Budget &amp; brief</td><td>The tracker top-right breaks down the $10M; PROJECT BRIEF maps the assignment</td></tr>
+      </table>
+      <h4>Render quality — running <b id="uiGuideRun"></b></h4>
+      <div id="uiGuideTiers"></div>
+      <div class="note">Click a tier to switch — the scene reloads and your choice is remembered for next time.</div>
+    </div></div>
     <div id="uiRubric"><div class="panel">
       <span class="close" id="uiRubricX">&times;</span>
       <h2>${TOWN.name} — Project Brief</h2>
@@ -160,38 +188,52 @@ export function installUI() {
   const budget = $('#uiBudget');
   budget.addEventListener('click', () => budget.classList.toggle('open'));
 
-  /* ---------------- quality tier settings ---------------- */
-  const tierChip = $('#uiTier'), tierMenu = $('#uiTierMenu');
-  const TIERS = [['auto', 'adapts to this device'], ['high', 'full fidelity'],
-    ['med', 'lighter shadows & effects'], ['low', 'no post-fx — weak GPUs / low RAM'],
-    ['min', 'minimal scene — very weak devices']];
-  for (const [q, hint] of TIERS) {
-    const d = document.createElement('div');
-    d.className = 't'; d.dataset.q = q;
-    d.innerHTML = `${q.toUpperCase()}<span>${hint}</span>`;
-    d.addEventListener('click', () => {
-      try { q === 'auto' ? localStorage.removeItem('dt_q')
-                         : localStorage.setItem('dt_q', q); } catch {}
-      /* a ?q=/?quality= in the URL would beat the saved pref after reload —
-         strip the overrides (keep ?time, ?view, etc.) so the pick applies */
-      const u = new URL(location.href);
-      u.searchParams.delete('q'); u.searchParams.delete('quality');
-      location.href = u.toString();
+  /* ---------------- guide + render-quality tiers ---------------- */
+  const tierChip = $('#uiTier'), guide = $('#uiGuide');
+  const TIERS = [
+    ['auto', 'Adapts to this device — picks high / low / min from GPU, CPU cores and memory.'],
+    ['ultra','Maximum — 8K shadows, 8x MSAA, 3x pixels, deeper ambient occlusion, shadowed interiors, every chunk loaded. Fastest machines only.'],
+    ['high', 'Full fidelity — 4K soft shadows, ambient occlusion, bloom, SMAA, 2x pixels, full scene detail.'],
+    ['med',  'Balanced — 2K shadows, bloom + SMAA, no ambient occlusion, full scene detail, chunked map loading.'],
+    ['low',  'Performance — 1K shadows, SMAA only (no AO / bloom), full scene detail, chunked map loading. For weak GPUs / low RAM.'],
+    ['min',  'Minimal — no shadows or post-fx, no moving traffic or pedestrians, 12% scene detail with chunked map culling (~280k tris at street level). For very weak devices.'],
+  ];
+  let savedPref = 'auto';
+  try { savedPref = localStorage.getItem('dt_q') || 'auto'; } catch {}
+  $('#uiGuideTiers').innerHTML = TIERS.map(([q, ft]) =>
+    `<div class="tr${q === savedPref ? ' on' : ''}" data-q="${q}">
+      <span class="nm">${q.toUpperCase()}</span><span class="ft">${ft}</span>
+      <span class="bdg"></span>
+    </div>`).join('');
+  $('#uiGuideTiers').addEventListener('click', e => {
+    const row = e.target.closest('.tr');
+    if (!row) return;
+    const q = row.dataset.q;
+    try { q === 'auto' ? localStorage.removeItem('dt_q')
+                       : localStorage.setItem('dt_q', q); } catch {}
+    /* a ?q=/?quality= in the URL would beat the saved pref after reload —
+       strip the overrides (keep ?time, ?view, etc.) so the pick applies */
+    const u = new URL(location.href);
+    u.searchParams.delete('q'); u.searchParams.delete('quality');
+    location.href = u.toString();
+  });
+  function openGuide() {
+    /* __fx is created after installUI — read the effective tier lazily */
+    const running = (window.__fx && window.__fx.tier) || '';
+    $('#uiGuideRun').textContent = running ? running.toUpperCase() : '—';
+    guide.querySelectorAll('.tr').forEach(el => {
+      const marks = [];
+      if (el.classList.contains('on')) marks.push('SAVED');
+      if (el.dataset.q === running) marks.push('RUNNING NOW');
+      el.querySelector('.bdg').textContent = marks.join(' · ');
     });
-    tierMenu.appendChild(d);
+    guide.classList.add('open');
+    drawer.classList.remove('open');
   }
-  tierChip.addEventListener('click', e => {
-    e.stopPropagation();
-    let saved = 'auto';
-    try { saved = localStorage.getItem('dt_q') || 'auto'; } catch {}
-    tierMenu.querySelectorAll('.t').forEach(t =>
-      t.classList.toggle('on', t.dataset.q === saved));
-    tierMenu.classList.toggle('open');
-  });
-  addEventListener('mousedown', e => {
-    if (tierMenu.classList.contains('open') && !tierMenu.contains(e.target) && e.target !== tierChip)
-      tierMenu.classList.remove('open');
-  });
+  $('#uiBtnGuide').addEventListener('click', openGuide);
+  tierChip.addEventListener('click', e => { e.stopPropagation(); openGuide(); });
+  $('#uiGuideX').addEventListener('click', () => guide.classList.remove('open'));
+  guide.addEventListener('click', e => { if (e.target === guide) guide.classList.remove('open'); });
 
   /* ---------------- facility directory ---------------- */
   const drawer = $('#uiDrawer');

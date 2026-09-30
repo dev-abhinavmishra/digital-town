@@ -16,7 +16,7 @@ const TOWN_CLIP = new THREE.Box3(
   new THREE.Vector3(-950, -30, -860),
   new THREE.Vector3( 950, 160,  860));
 
-export function createPipeline(renderer, scene, camera, { time = 'day', ao = true, pixelRatio = 1, msaa = 4, skip = null } = {}) {
+export function createPipeline(renderer, scene, camera, { time = 'day', ao = true, pixelRatio = 1, msaa = 4, skip = null, aoHi = false } = {}) {
   const size = renderer.getDrawingBufferSize(new THREE.Vector2());
   const rt = new THREE.WebGLRenderTarget(size.x, size.y, {
     type: THREE.HalfFloatType,
@@ -30,13 +30,13 @@ export function createPipeline(renderer, scene, camera, { time = 'day', ao = tru
   if (ao) {
     gtao = new GTAOPass(scene, camera, size.x, size.y);
     gtao.output = GTAOPass.OUTPUT.Default;
-    gtao.blendIntensity = 1.0;
+    gtao.blendIntensity = aoHi ? 1.15 : 1.0;
     gtao.updateGtaoMaterial({
       radius: 4,             // tight contact-scale AO — grounds buildings/props
       distanceExponent: 1.0,
       thickness: 1.5,
       scale: 1.9,
-      samples: 24,
+      samples: aoHi ? 32 : 24,
       distanceFallOff: 1,
       screenSpaceRadius: false,
     });

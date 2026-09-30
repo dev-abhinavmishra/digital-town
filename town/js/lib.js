@@ -1111,7 +1111,53 @@ export function instances(geo, material, list, { shadow = true } = {}) {
   });
   im.castShadow = shadow; im.receiveShadow = shadow;
   im.instanceMatrix.needsUpdate = true;
+  // marker for the MIN-tier chunk splitter: this helper is only used for
+  // never-animated scatter content (trees, grass, litter, furniture…)
+  im.userData.staticInst = true;
   return im;
+}
+
+/* splitInstanced(im, chunk) — rebucket a static InstancedMesh into one
+   InstancedMesh per grid cell so far cells can be culled like merge chunks.
+   Shares geometry/material, copies instanceColor and shadow flags, tags each
+   child with the cell centre (userData.ccx/ccz). Only call on meshes whose
+   matrices are never rewritten at runtime (userData.staticInst). */
+export function splitInstanced(im, chunk) {
+  const cells = new Map();
+  const mm = im.instanceMatrix.array;
+  for (let i = 0; i < im.count; i++) {
+    const x = mm[i * 16 + 12], z = mm[i * 16 + 14];
+    const k = (Math.floor(x / chunk) + 512) * 1024
+            + Math.floor(z / chunk) + 512;
+    let c = cells.get(k);
+    if (!c) { c = { ids: [], x0: x, x1: x, z0: z, z1: z }; cells.set(k, c); }
+    c.ids.push(i);
+    if (x < c.x0) c.x0 = x; if (x > c.x1) c.x1 = x;
+    if (z < c.z0) c.z0 = z; if (z > c.z1) c.z1 = z;
+  }
+  const out = new THREE.Group();
+  const cm = new THREE.Matrix4(), cc = new THREE.Color();
+  for (const [k, c] of cells) {
+    const idx = c.ids;
+    const sub = new THREE.InstancedMesh(im.geometry, im.material, idx.length);
+    idx.forEach((src, dst) => {
+      im.getMatrixAt(src, cm); sub.setMatrixAt(dst, cm);
+      if (im.instanceColor) { im.getColorAt(src, cc); sub.setColorAt(dst, cc); }
+    });
+    sub.castShadow = im.castShadow; sub.receiveShadow = im.receiveShadow;
+    sub.renderOrder = im.renderOrder;
+    if (im.customDepthMaterial) sub.customDepthMaterial = im.customDepthMaterial;
+    sub.instanceMatrix.needsUpdate = true;
+    if (sub.instanceColor) sub.instanceColor.needsUpdate = true;
+    sub.userData.staticInst = true;
+    sub.userData.ccx = (Math.floor(k / 1024) - 512 + .5) * chunk;
+    sub.userData.ccz = (k % 1024 - 512 + .5) * chunk;
+    /* true instance bounds padded for local geo extent — the MIN culler tests
+       these, not the cell centre, so nothing vanishes beneath the camera */
+    sub.userData.cb = { x0: c.x0 - 16, z0: c.z0 - 16, x1: c.x1 + 16, z1: c.z1 + 16 };
+    out.add(sub);
+  }
+  return out;
 }
 
 /* splitMesh — yield {geo, mat} per material (handles material arrays via groups) */
@@ -1130,10 +1176,14 @@ function* splitMesh(geo, material) {
   }
 }
 
-/* mergeStatic(root) — bake every static mesh's world transform, bucket by material,
-   merge into one mesh per material. Skips InstancedMesh, Points, Sprites and
-   anything flagged userData.dynamic or userData.noMerge. Massive draw-call cut. */
-export function mergeStatic(root) {
+/* mergeStatic(root, {chunk}) — bake every static mesh's world transform, bucket by
+   material, merge into one mesh per material. Skips InstancedMesh, Points, Sprites
+   and anything flagged userData.dynamic or userData.noMerge. Massive draw-call cut.
+   With chunk > 0 each material bucket is further split by grid cell — one mesh per
+   material per cell — so a merged mesh never spans the whole town: street views
+   frustum-cull the far side of the map, and the MIN tier can distance-cull whole
+   cells (userData.ccx/ccz = cell centre baked on each chunk mesh). */
+export function mergeStatic(root, { chunk = 0 } = {}) {
   const buckets = new Map();
   const doomed = [];
   root.updateMatrixWorld(true);
@@ -1161,19 +1211,44 @@ export function mergeStatic(root) {
   for (const o of doomed) o.parent && o.parent.remove(o);
   const out = new THREE.Group();
   out.name = 'merged';
+  const cellKey = g => {
+    if (!g.boundingBox) g.computeBoundingBox();
+    const c = g.boundingBox.getCenter(_cellV);
+    return (Math.floor(c.x / chunk) + 512) * 1024 + Math.floor(c.z / chunk) + 512;
+  };
   for (const [material, b] of buckets) {
-    // indexed merge — weld the rare non-indexed parts (see colored())
-    const merged = mergeGeometries(
-      b.geos.map(g => g.index ? g : mergeVertices(g)), false);
-    const mesh = new THREE.Mesh(merged, material);
-    mesh.castShadow = b.cast; mesh.receiveShadow = b.recv;
-    mesh.matrixAutoUpdate = false;
-    out.add(mesh);
+    const cells = new Map();
+    for (const g of b.geos) {
+      const k = chunk ? cellKey(g) : 0;
+      let cell = cells.get(k);
+      if (!cell) { cell = []; cells.set(k, cell); }
+      cell.push(g);
+    }
+    for (const [k, geos] of cells) {
+      // indexed merge — weld the rare non-indexed parts (see colored())
+      const merged = mergeGeometries(
+        geos.map(g => g.index ? g : mergeVertices(g)), false);
+      merged.computeBoundingBox();
+      const bb = merged.boundingBox;
+      const mesh = new THREE.Mesh(merged, material);
+      mesh.castShadow = b.cast; mesh.receiveShadow = b.recv;
+      mesh.matrixAutoUpdate = false;
+      /* world-baked xz bounds — the MIN culler tests these, so a geometry
+         that spans many cells (ground plane, mountain ring, district-wide
+         decals) stays visible wherever its bounds actually reach */
+      mesh.userData.cb = { x0: bb.min.x, z0: bb.min.z, x1: bb.max.x, z1: bb.max.z };
+      if (chunk) {
+        mesh.userData.ccx = (Math.floor(k / 1024) - 512 + .5) * chunk;
+        mesh.userData.ccz = (k % 1024 - 512 + .5) * chunk;
+      }
+      out.add(mesh);
+    }
     b.geos.forEach(g => g.dispose());
   }
   root.add(out);
   return out;
 }
+const _cellV = new THREE.Vector3();
 /* runtime state populated by main.js's material pass - lets async-loaded
    assets (glTF landmarks) apply the same time-of-day env/emissive gains that
    the one-shot traverse applied to everything loaded synchronously */

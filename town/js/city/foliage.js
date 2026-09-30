@@ -247,6 +247,7 @@ export function foliageMesh(geo, kind, list, { jitterHue = .06, sat = .42, lit =
   });
   im.castShadow = im.receiveShadow = shadows;
   im.instanceMatrix.needsUpdate = true;
+  im.userData.staticInst = true;   // wind sway is shader-side — MIN may chunk it
   return im;
 }
 

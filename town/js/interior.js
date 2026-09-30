@@ -1,4 +1,6 @@
 // interior.js — click a building to step inside: a furnished interior unique
+const ULTRA = () => typeof window !== 'undefined' &&
+  window.__fx && window.__fx.tier === 'ultra';
 // to that building (seeded by id — palette drift + layout jitter), rendered on
 // its own layer in a sealed room staged beneath the town, plus an info HUD
 // carrying the building's name, cost/budget share, purpose and size.
@@ -575,6 +577,20 @@ function buildRoom(kind, w, d, h, wallHex, floorTex, accentTex, seed) {
   const p1 = new THREE.PointLight('#ffe6b8', 34, 0, 1.9); p1.position.set(0, h - 1.1, 0);
   const p2 = new THREE.PointLight('#fff2d8', 14, 0, 2.0); p2.position.set(0, h - 1.2, d * .3);
   g.add(amb, hemi, p1, p2);
+  if (ULTRA()) {
+    /* real soft shadows indoors: the key pendant casts a cube shadow map
+       (static room — one needsUpdate bake is enough), plus a back-wall
+       wash for depth */
+    p1.castShadow = true;
+    p1.shadow.mapSize.set(1024, 1024);
+    p1.shadow.camera.near = .3; p1.shadow.camera.far = 30;
+    p1.shadow.bias = -0.004;
+    g.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+    const p3 = new THREE.PointLight('#ffd9a8', 10, 0, 2.2);
+    p3.position.set(0, h - 1.0, -d * .35);
+    g.add(p3);
+    if (window.__renderer) window.__renderer.shadowMap.needsUpdate = true;
+  }
   g.position.copy(STAGE);
   g.traverse(o => o.layers.set(LYR));
   return g;

@@ -220,6 +220,7 @@ export function buildTrees(scene) {
       if (sVar) { col.setHSL(hueBase + rr(-.06, .06), sat + rr(-.1, .12), lit + rr(-.05, .08)); im.setColorAt(i, col); }
     });
     im.castShadow = im.receiveShadow = true;
+    im.userData.staticInst = true;   // shader sways — matrices never animate
     scene.add(im);
     return im;
   };
@@ -365,6 +366,7 @@ export function buildTrees(scene) {
       bim.setColorAt(i, col);
     });
     bim.castShadow = bim.receiveShadow = true;
+    bim.userData.staticInst = true;
     scene.add(bim);
   }
   return kept.length;

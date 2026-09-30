@@ -268,7 +268,7 @@ export function buildGreens(scene) {
         im.setMatrixAt(i, Mx);
         col.setHSL(.25 + rr(-.05, .05), .45 + rr(-.1, .1), .24 + rr(-.05, .07)); im.setColorAt(i, col);
       });
-      im.castShadow = im.receiveShadow = true; scene.add(im);
+      im.castShadow = im.receiveShadow = true; im.userData.staticInst = true; scene.add(im);
     }
     if (cons.length) {
       const im = new THREE.InstancedMesh(conG, folM, cons.length);
@@ -279,7 +279,7 @@ export function buildGreens(scene) {
         im.setMatrixAt(i, Mx);
         col.setHSL(.34 + rr(-.04, .04), .42 + rr(-.08, .08), .15 + rr(-.03, .05)); im.setColorAt(i, col);
       });
-      im.castShadow = im.receiveShadow = true; scene.add(im);
+      im.castShadow = im.receiveShadow = true; im.userData.staticInst = true; scene.add(im);
     }
       scene.add(instances(trunkG, trunkM, cons));
   }

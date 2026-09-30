@@ -35,6 +35,12 @@ To simulate the Vercel static bundle, copy town/ minus node_modules (`tar --excl
 - Camera pose check: on enter, `I.saved.p/q` must equal the pre-enter aerial pose; on exit, `__cam.position`/`quaternion` must equal it exactly. Regression signature (seen on devin/1790469015-building-interiors): on re-entry the saved pose captured stage coords (~(16.4,-178.4,-12.4) for a w34×d26 room) because I.on flips 190ms before the save and interior.tick clamps to the stale I.spec — exit then lands at a random street point. First entry per page is immune (I.spec null → tick no-ops).
 - Park zone ('park') has no w/d and ZONE_RECT.park=null → unpickable; clicking the park does nothing (no card). Road/ground clicks are inert by design.
 
+## MIN-tier chunked merge + distance culler
+- `?q=min|low|med|high` forces a tier; `#uiTier` element shows the active tier ('MIN'/'HIGH'). `window.__prof` build entries: `['buildWorld',ms]`, `['mergeStatic',ms]`, `['minSplit',n]` (MIN only — n static InstancedMeshes rebucketed into cells).
+- Chunk cells: merged-mesh + split-instanced children carry `userData.ccx/ccz` (cell centre). Collect via `__scene.traverse(o=>o.userData&&o.userData.ccx!==undefined)`. Cell spacing: 160m on MIN, 320m on all other tiers.
+- Culler (MIN only, every 10 frames): cell hidden iff `(ccx-cam.x)^2+(ccz-cam.z)^2 >= max(300,cam.y*3)^2`. Verify by comparing `mesh.visible` to that formula per cell after the camera settles ≥1s — any mismatch is a bug. Note: hidden cells can have huge boundingBox reach (big world-baked ground pieces) — that alone is NOT a hole; only missing near-field pixels are.
+- playwright `page.screenshot` can stall >20s on heavy tiers under SwiftShader — pass `timeout:120000`.
+
 ## Good camera spots for close-ups
 - Street blades: pole at each of the first 8 `intersections()` (all on University Ave x=-140) → SW corner offset (−wv/2−1.4, +wh/2+1.4); e.g. Univ×Main pole ≈(−150.4,−30.6), cam (−138,4.5,−18)→(−150.4,3.1,−30.6). (Verified on Linux: renders blades + crosswalks + pedestrians.)
 - Parking meters: rows z=−62 / z=−18 (x −38..180) along Main St; look along the row, e.g. (−30,2.6,−52)→(40,1,−62).
