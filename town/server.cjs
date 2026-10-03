@@ -4,7 +4,8 @@ const fs = require('fs');
 const path = require('path');
 const ROOT = __dirname;
 const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css',
-  '.png': 'image/png', '.jpg': 'image/jpeg', '.json': 'application/json', '.svg': 'image/svg+xml' };
+  '.png': 'image/png', '.jpg': 'image/jpeg', '.json': 'application/json', '.svg': 'image/svg+xml',
+  '.mp4': 'video/mp4', '.webm': 'video/webm' };
 http.createServer((req, res) => {
   let p = decodeURIComponent(req.url.split('?')[0]);
   if (p === '/') p = '/index.html';

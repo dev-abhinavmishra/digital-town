@@ -1,0 +1,28 @@
+import { chromium } from 'playwright-core';
+const b = await chromium.connectOverCDP('http://localhost:9223', { timeout: 90000 });
+const ctx = b.contexts()[0];
+const pg = await ctx.newPage();
+const errs = [];
+pg.on('pageerror', e => errs.push(e.message.slice(0, 120)));
+pg.on('console', m => { if (m.type() === 'error') errs.push(m.text().slice(0, 120)); });
+await pg.setViewportSize({ width: 1280, height: 720 });
+await pg.goto('http://127.0.0.1:8778/deck/index.html', { waitUntil: 'load', timeout: 60000 });
+await pg.waitForTimeout(2500);
+const n = await pg.evaluate('document.querySelectorAll(".slide").length');
+const names = await pg.evaluate('document.querySelectorAll(".slide")[0].textContent.includes("Abhinav Mishra")');
+const cnt = await pg.evaluate('document.getElementById("cnt")?.textContent');
+console.log('slides:', n, 'namesOnTitle:', names, 'cnt:', JSON.stringify(cnt));
+await pg.screenshot({ path: 'shots2/s-title.png' });
+await pg.keyboard.press('ArrowRight'); await pg.waitForTimeout(600);
+await pg.keyboard.press('ArrowRight'); await pg.waitForTimeout(600);
+const c3 = await pg.evaluate('document.getElementById("cnt")?.textContent');
+await pg.keyboard.press('End'); await pg.waitForTimeout(700);
+const cE = await pg.evaluate('JSON.stringify({cnt:document.getElementById("cnt").textContent,refs:document.querySelectorAll(".slide")[12].textContent.includes("Sources"),namesOnRefs:document.querySelectorAll(".slide")[12].textContent.includes("Davi")})');
+console.log('after2R:', c3, 'afterEnd:', cE);
+await pg.screenshot({ path: 'shots2/s-refs.png' });
+const cur13 = await pg.evaluate('document.querySelectorAll(".slide")[12].classList.contains("cur")');
+// clamp check: ArrowRight past last stays 13
+await pg.keyboard.press('ArrowRight'); await pg.waitForTimeout(400);
+const cClamp = await pg.evaluate('document.getElementById("cnt")?.textContent');
+console.log('lastIsCur:', cur13, 'afterExtraR(clamp):', cClamp, 'errors:', errs.length ? errs : 'none');
+await pg.close(); await b.close();

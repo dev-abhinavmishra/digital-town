@@ -867,7 +867,7 @@ function ems(s) {
     g.add(box(7, .5, .7, mat('#b03a2e'), i * 9, 6, d / 2 + .15));
     g.add(box(.3, 6.5, .5, mat('#d9d5cc'), i * 9 + 3.6, 0, d / 2 + .12));
   }
-  sign(g, 'EMS \u2022 RAPIDRESPONSE', w * .8, s.h - 1.4, d / 2 + .3, { bg: '#8e2f26', font: 'bold 40px Arial' });
+  sign(g, 'HARTLINE EMS', w * .8, s.h - 1.4, d / 2 + .3, { bg: '#8e2f26', font: 'bold 44px Arial' });
   // small tower + antenna + beacon
   g.add(box(5, s.h + 5, 5, mat('#8e2f26'), -w / 2 + 3, 0, -d / 2 + 3));
   g.add(cyl(.08, .08, 8, mat('#333'), -w / 2 + 3, s.h + 5, -d / 2 + 3));
@@ -887,14 +887,14 @@ function senior(s) { // assisted living — U-shaped courtyard
     g.add(b);
     const r = hipRoof(ww, 5, dd, roofM); r.position.set(x, s.h, z); g.add(r);
   };
-  mk(w, d * .34, 0, -d * .33);            // back wing
-  mk(w * .3, d * .7, -w * .35, d * .1);   // west wing
-  mk(w * .3, d * .7, w * .35, d * .1);    // east wing
+  mk(w, d * .34, 0, -d * .33);            // back wing — south face at z=-d*.16
+  mk(w * .3, d * .61, -w * .35, d * .145); // west wing abuts it (no overlap)
+  mk(w * .3, d * .61, w * .35, d * .145);  // east wing abuts it
   // porte-cochère
   g.add(box(14, .7, 10, roofM, 0, 5.2, -d * .33 + d * .17 + 4));
   g.add(cyl(.35, .35, 5.2, mat('#e8e2d4'), -6, 0, -d * .33 + d * .17 + 7));
   g.add(cyl(.35, .35, 5.2, mat('#e8e2d4'), 6, 0, -d * .33 + d * .17 + 7));
-  sign(g, 'SILVER OAKS SENIOR LIVING', w * .55, s.h - 2, -d * .33 + d * .17 + .4, { bg: '#5d4037', font: 'bold 36px Georgia' });
+  sign(g, 'HALCYON HOUSE', w * .55, s.h - 2, -d * .33 + d * .17 + .4, { bg: '#5d4037', font: 'bold 40px Georgia' });
   // courtyard garden beds
   for (let i = -1; i <= 1; i++)
     g.add(box(6, .5, 3, mat('#5d7a4a'), i * 9, 0, d * .22));
@@ -915,7 +915,7 @@ function hospice(s) {
   g.add(box(w * .7, .5, 5, mat('#a58a68'), 0, .4, d / 2 + 2.5));
   for (let i = -3; i <= 3; i++) g.add(cyl(.28, .28, 3.6, mat('#efe8da'), i * w * .09, .6, d / 2 + 4));
   g.add(box(w * .7, .4, 5.5, roofM, 0, 4.4, d / 2 + 2.5));
-  sign(g, 'TRANQUIL HARBOR HOSPICE', w * .6, s.h + 1.2, d / 2 + .4, { bg: '#4d6155', font: 'bold 34px Georgia' });
+  sign(g, 'STILLPOINT HOSPICE', w * .6, s.h - 2, d / 2 + .4, { bg: '#4d6155', font: 'bold 38px Georgia' });
   return g;
 }
 
@@ -1007,18 +1007,19 @@ function bigbox(s, brand) {
   winDressMesh(g, w, d, s.h, { rows: 1, cols: 10, storefront: true, faces: 'fbs',
     transom: true, fins: true, reveal: true });
   storefrontKitMesh(g, w, d, s.h, { cols: 10, faces: 'fbs' });
-  if (isTarget) {
-    g.add(box(w, 2.6, .8, mat('#cc0000'), 0, s.h - 4, d / 2 + .2));
-    sign(g, 'TARGET', w * .3, s.h - 8.4, d / 2 + .4, { bg: '#cc0000', font: 'bold 60px Arial' });
+  if (isTarget) {   // anchor store — Masterson's navy livery
+    const bc = '#1f3a5f';
+    g.add(box(w, 2.6, .8, mat(bc), 0, s.h - 4, d / 2 + .2));
+    sign(g, "MASTERSON'S", w * .3, s.h - 8.4, d / 2 + .4, { bg: bc, font: 'bold 60px Georgia' });
     for (let i = -3; i <= 3; i++) {
-      const sph = new THREE.Mesh(new THREE.SphereGeometry(1.1, 12, 12), mat('#cc0000', { roughness: .4 }));
+      const sph = new THREE.Mesh(new THREE.SphereGeometry(1.1, 12, 12), mat('#c8a34e', { roughness: .4 }));
       sph.position.set(i * 6, .8, d / 2 + 4); sph.castShadow = true; g.add(sph);
     }
     // cart corrals in front
     for (const cx of [-18, 18]) {
-      g.add(box(6, 1.1, .15, mat('#cc0000'), cx, .4, d / 2 + 10));
-      g.add(box(.15, 1.1, 4, mat('#cc0000'), cx - 3, .4, d / 2 + 8));
-      g.add(box(.15, 1.1, 4, mat('#cc0000'), cx + 3, .4, d / 2 + 8));
+      g.add(box(6, 1.1, .15, mat(bc), cx, .4, d / 2 + 10));
+      g.add(box(.15, 1.1, 4, mat(bc), cx - 3, .4, d / 2 + 8));
+      g.add(box(.15, 1.1, 4, mat(bc), cx + 3, .4, d / 2 + 8));
     }
   } else {
     sign(g, s.name.toUpperCase(), w * .5, s.h - 4, d / 2 + .3, { bg: '#2e6b46', font: 'bold 48px Georgia' });
@@ -1027,7 +1028,7 @@ function bigbox(s, brand) {
   door(g, 10, 5.4, 0, d / 2 + .3);
   // sprint-03 entrance: canopy + branded fascia + posts over the doors
   const _be = g.children.length;
-  const bc2 = s.brand === 'target' ? '#cc0000' : '#2e6b46';
+  const bc2 = s.brand === 'target' ? '#1f3a5f' : '#2e6b46';
   g.add(box(w * .36, .55, 5, mat('#3f4750'), 0, 6.3, d / 2 + 2.4));
   g.add(box(w * .36 + .5, .25, 5.6, mat(bc2), 0, 6.85, d / 2 + 2.4));
   for (const px of [-w * .15, w * .15]) g.add(cyl(.3, .3, 6.3, mat('#8a9094'), px, 0, d / 2 + 4.4));
@@ -1098,7 +1099,7 @@ function museum(s) {
   const rot = cyl(9, 9, s.h * .8, mat('#c4cdd2'), -w * .3, 0, d * .18, 20); g.add(rot);
   const dome = new THREE.Mesh(new THREE.SphereGeometry(9, 20, 12, 0, Math.PI * 2, 0, Math.PI / 2), mat('#5d7686', { roughness: .5, metalness: .3 }));
   dome.position.set(-w * .3, s.h * .8, d * .18); dome.castShadow = true; g.add(dome);
-  sign(g, 'DISCOVERY MUSEUM', w * .5, s.h - 3, d / 2 + .3, { bg: '#37474f', font: 'bold 38px Georgia' });
+  sign(g, 'QUARRY HILL MUSEUM', w * .5, s.h - 3, d / 2 + .3, { bg: '#37474f', font: 'bold 36px Georgia' });
   // entry plaza steps
   g.add(box(16, .4, 4, mat('#b9b2a2'), w * .1, 0, d / 2 + 2));
   // sprint-03 entrance: portico canopy + door + blade over the plaza steps
@@ -1153,7 +1154,7 @@ function fastfood(s) {
   const { w, d } = s;
   const b = box(w, s.h, d, null);
   b.material = wallMats(facadeMaps({ base: '#e8dcc4', rows: 1, cols: 4,
-    storefront: true, signText: 'FIESTA EXPRESS', signBg: '#c0392b', brickLines: false }), mat('#8a4b2d'));
+    storefront: true, signText: 'PAINTED COYOTE', signBg: '#c0392b', brickLines: false }), mat('#8a4b2d'));
   g.add(b);
   parapet(g, w, d, s.h, { color: '#8a4b2d' });
   facadeDress(g, w, d, s.h, { cornice: true, pilasters: false });
@@ -1168,7 +1169,7 @@ function fastfood(s) {
   g.add(box(2.4, 1.6, .2, mat('#3a2a18'), w / 2 + 5, .8, -3.6));
   // sign pole
   g.add(cyl(.25, .25, 12, mat('#555'), w / 2 + 12, 0, d / 2 + 6));
-  const st = signTexture('FIESTA\nEXPRESS', { bg: '#c0392b', font: 'bold 34px Arial' });
+  const st = signTexture('PAINTED\nCOYOTE', { bg: '#c0392b', font: 'bold 34px Arial' });
   const ps = new THREE.Mesh(new THREE.PlaneGeometry(7, 5), new M({ map: st, side: THREE.DoubleSide }));
   ps.position.set(w / 2 + 12, 10, d / 2 + 6); g.add(ps);
   return g;

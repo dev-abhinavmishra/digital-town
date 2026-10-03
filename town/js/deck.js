@@ -2,10 +2,11 @@
 // Each slide is a slow camera flight with an editorial caption block; the town
 // itself is the imagery. Keyboard: ←/→ step, space pause, Esc exit.
 // DOM-only except window.__flyTo / __endTour / __enterInterior.
-import { BUILDINGS, TOWN, CATEGORY_COLORS } from './layout.js';
+import { BUILDINGS, TOWN } from './layout.js';
 
 const BUDGET = 10_000_000;
 const money = n => '$' + (n / 1e6).toFixed(2) + 'M';
+const fmt = n => n >= 1e6 ? '$' + (n / 1e6).toFixed(1) + 'M' : '$' + n / 1e3 + 'k';
 
 /* editorial, not corporate-template: one ink scrim + hairline rules,
    palatino-class display serif + system sans, letterboxed frame, and every
@@ -37,7 +38,27 @@ const css = `
 #uiDeck h1.big { font-size:74px; letter-spacing:.5px; }
 #uiDeck h1 em { font-style:italic; font-weight:400; }
 #uiDeck .body { font-size:14.5px; line-height:1.65; color:var(--sub); max-width:470px; }
+#uiDeck .pts { list-style:none; margin-top:2px; max-width:600px; }
+#uiDeck .pts li { font-size:13.5px; line-height:1.5; color:var(--sub);
+  padding-left:18px; position:relative; margin-bottom:7px; }
+#uiDeck .pts li::before { content:'\\2014'; position:absolute; left:0; color:var(--dim); }
+#uiDeck .pts li b { color:var(--ink); font-weight:600; }
+#uiDeck .sheet { margin-top:14px; display:flex; gap:30px; max-width:680px; }
+#uiDeck .sheet .col { flex:1; }
+#uiDeck .sheet .colh { font-size:10px; letter-spacing:2px; text-transform:uppercase;
+  color:var(--ink); font-weight:600; margin-bottom:8px;
+  display:flex; justify-content:space-between; gap:10px; }
+#uiDeck .sheet .colh span { color:var(--dim); font-weight:400; }
+#uiDeck .sheet .row { display:flex; font-size:10.8px; line-height:1.9; color:var(--sub); }
+#uiDeck .sheet .row i { font-style:normal; color:var(--dim); width:20px; flex:none; }
+#uiDeck .sheet .row em { font-style:normal; flex:1; padding-right:10px; }
+#uiDeck .sheet .row b { color:var(--ink); font-weight:600; white-space:nowrap; }
+#uiDeck .sheet .foot { margin-top:12px; font-size:11px; color:var(--dim);
+  letter-spacing:.4px; border-top:1px solid var(--rule); padding-top:9px; max-width:680px; }
+#uiDeck .sheet .foot b { color:var(--ink); font-weight:600; }
 #uiDeck .stats { display:flex; gap:26px; margin-top:20px; }
+#uiDeck .cap .team { margin-top:16px; font-size:10.5px; letter-spacing:2.4px;
+  color:var(--dim); text-transform:uppercase; }
 #uiDeck .st b { display:block; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
   font-size:26px; font-weight:500; color:var(--ink); }
 #uiDeck .st span { font-size:10px; letter-spacing:1.8px; text-transform:uppercase; color:var(--dim); }
@@ -68,6 +89,13 @@ const css = `
 #uiDeck.on .x { opacity:1; }
 #uiDeck .edge { position:absolute; top:0; bottom:0; width:22%; pointer-events:auto; }
 #uiDeck .edge.l { left:0 } #uiDeck .edge.r { right:0 }
+/* video background: a pre-rendered orbit of the town replaces live camera
+   flights so PRESENT mode costs a video decode instead of the whole scene */
+#uiDeck .bgvid { position:absolute; inset:0; width:100%; height:100%;
+  object-fit:cover; background:#050b0f; }
+/* film-cut transition: the video dips through black on every slide change */
+#uiDeck .dip { position:absolute; inset:0; background:#050b0f; opacity:0;
+  pointer-events:none; }
 `;
 
 export function installDeck() {
@@ -77,7 +105,8 @@ export function installDeck() {
   document.head.appendChild(style);
   const root = document.createElement('div');
   root.id = 'uiDeck';
-  root.innerHTML = `<div class="bar t"></div><div class="bar b"></div><div class="scrim"></div>
+  root.innerHTML = `<div class="bar t"></div><div class="bar b"></div>
+    <video class="bgvid" src="deck/town-orbit.mp4" muted loop playsinline preload="auto"></video><div class="scrim"></div><div class="dip"></div>
     <div class="brand">${TOWN.name} — a community planned around care</div>
     <div class="x">ESC to exit</div>
     <div class="cap"></div>
@@ -87,7 +116,7 @@ export function installDeck() {
   document.body.appendChild(root);
 
   const cap = root.querySelector('.cap'), cnt = root.querySelector('.cnt'),
-        prog = root.querySelector('.prog i');
+        prog = root.querySelector('.prog i'), dip = root.querySelector('.dip');
 
   const numd = BUILDINGS.filter(b => b.num);
   const spent = numd.reduce((s, b) => s + (b.cost || 0), 0);
@@ -104,62 +133,116 @@ export function installDeck() {
   const W = () => window.__ws || 1;
   const SLIDES = [
     { cam: [620, 520, 690, -60, 0, -70], dur: 12, cover: true,
-      kick: 'HST project · a digital town', title: '<em>HAVENBROOK</em>',
-      body: 'A community planned around care — a full town designed, budgeted and built to a $10,000,000 brief.' },
+      kick: 'Our Town · HST digital town project', title: '<em>HAVENBROOK</em>',
+      body: 'A town we designed around a medical school — every building named, every dollar counted.',
+      team: 'Abhinav Mishra · Dinesh Yara · Davi Ogland' },
     { cam: [60, 780, 560, -20, 0, -60], dur: 11,
-      kick: 'The brief', title: 'One town, ten rules',
-      body: 'A medical university anchors the plan, housing surrounds it, and at least seven healthcare and three community facilities had to fit inside $10M.',
+      kick: 'The brief', title: 'What we had to build', pts: [
+        'A town growing around a new medical university — donated, off-budget',
+        'A housing development — also donated',
+        'At least 7 healthcare facilities and 3 community locations',
+        'A real name on every building, all inside <b>$10,000,000</b>'],
       stats: [money(spent), 'spent of $10M', `${nH}`, 'healthcare sites', `${nC}`, 'community sites'] },
-    { cam: [230, 110, -40, 40, 16, -250], dur: 10,
-      kick: 'The anchor — provided free', title: 'University School of Medicine',
-      body: 'The town is planned around a real campus at its heart: a medical school, library, anatomy and clinical halls around a central quadrangle.' },
-    { cam: [300, 110, -620, 20, 26, -440], dur: 10,
-      kick: '#3–15 · Wellness Way', title: 'Care within reach',
-      body: 'Havenbrook General sits one block from EMS on the Wellness Way spine — 13 facilities from diagnostics to hospice, minutes from every district.' },
     { cam: [-270, 150, 430, -500, 8, 190], dur: 10,
-      kick: '#2 · Residential West — provided free', title: 'The Preserve',
-      body: 'The donated housing development: cottage rows, duplexes and townhouses around Preserve Commons — homes wrapped around the campus they serve.' },
+      kick: 'Population & demographics', title: 'Who lives here', pts: [
+        'Half are <b>college students</b> — flats and a student clinic hug the campus',
+        'About a third are <b>families</b> — houses cluster around the K-12',
+        'One in five is <b>65+</b> — senior living and hospice sit in the quiet east',
+        'That mix is why the map looks the way it does'],
+      stats: ['50%', 'college students', '30%', 'families', '20%', 'adults 65+'] },
+    { cam: [230, 110, -40, 40, 16, -250], dur: 10,
+      kick: 'The anchor · donated, off-budget', title: 'University School of Medicine', pts: [
+        'Med school, the Marchand library, and Whitmore + Caldecott halls around one quad',
+        'Sits at the town\u2019s center — every district zones outward from it',
+        'Student flats wrap the west and south edges',
+        'It\u2019s why the town exists, so it gets the best spot'] },
+    { cam: [300, 110, -620, 20, 26, -440], dur: 10,
+      kick: '#3–15 · Wellness Way', title: 'Thirteen ways to get care', pts: [
+        '<b>Emergency:</b> Havenbrook General + Hartline EMS, a block apart on the Wellness spine',
+        '<b>Everyday:</b> Thacher clinic, Brookfield physicians, Marigold dental, Parallax optical, Argus labs',
+        '<b>Long-term:</b> Stoneleigh rehab, Stillwater behavioral health, Halcyon House, Stillpoint hospice',
+        '<b>Public health:</b> the county Health Department · <b>At home:</b> Innisfree visits'] },
+    { cam: [-270, 150, 430, -500, 8, 190], dur: 10,
+      kick: '#2 · Residential West · donated, off-budget', title: 'The Preserve', pts: [
+        'The required housing development — cottages, duplexes, townhouses',
+        'Preserve Commons apartments fill the middle of the neighborhood',
+        'Scholar\u2019s Walk + University Lofts take students; Midtown Flats takes downtown',
+        'Nobody is more than a short walk from campus or a bus route'] },
     { cam: [330, 130, 330, 575, 6, 130], dur: 10,
-      kick: '#22 · Willow Creek Park', title: 'The third places',
-      body: 'Pond, trails, playgrounds and the bandshell — the social heart — with downtown Main Street and the Commons mall walking-distance south.' },
+      kick: 'Community · 11 locations', title: 'The parts that aren\u2019t medicine', pts: [
+        '<b>Errands:</b> Havenbrook Commons mall, Masterson\u2019s, Olsen\u2019s Market, Bellwether Pharmacy',
+        '<b>Food:</b> The Orchard Table, The Painted Coyote, The Whippoorwill coffeehouse',
+        '<b>Outside:</b> Willow Creek Park — pond, trails, bandshell',
+        '<b>The boring-but-needed:</b> post office, school district, Quarry Hill Museum'] },
     { cam: [640, 100, -330, 520, 12, -550], dur: 10,
-      kick: '#14–15 · the quiet east', title: 'Ageing in place',
-      body: 'Silver Oaks senior living and Tranquil Harbor hospice sit in the leafy east — a full care loop from independent living to end-of-life.' },
-    { cam: [60, 780, 560, -20, 0, -60], dur: 9, dark: true,
-      kick: 'The ledger', title: `${money(spent)} of ${money(BUDGET)}`,
-      body: '', budget: true },
+      kick: '#14–15 · the quiet east', title: 'A place to grow old', pts: [
+        'Halcyon House — assisted living + memory care around a courtyard garden',
+        'Stillpoint Hospice next door, so the hardest visits stay short and private',
+        'Innisfree home health means seniors keep their own homes longer',
+        'The whole block sits on Sunset Ridge — farthest from traffic, closest to quiet'] },
+    { cam: [60, 780, 560, -20, 0, -60], dur: 11,
+      kick: 'Layout & placement', title: 'How we arranged it', pts: [
+        'Streets first: two arterials cross at the campus, 18 named streets fill the grid',
+        'Hospital and EMS share the Wellness Way spine — minutes from anywhere',
+        'Shops run along Commerce Blvd; the K-12 sits inside the neighborhoods',
+        'Every address is within two blocks of a through-street — that\u2019s the EMS rule'] },
+    { cam: [300, 110, -620, 20, 26, -440], dur: 10,
+      kick: 'Decision-making', title: 'What we traded', pts: [
+        'The two donated sites freed ~$4.5M — so we bought 13 small facilities instead of one mega-campus',
+        'Picked the mall over a second park — the Preserve already covers green space',
+        'Senior care went to the quiet east instead of paying downtown frontage',
+        'Stopped at 26 buildings and banked the leftover <b>$50,000</b> instead of forcing a 27th'] },
+    { cam: [60, 780, 560, -20, 0, -60], dur: 12, dark: true,
+      kick: 'The budget', title: 'Every dollar, accounted for', sheet: true },
     { cam: [620, 540, 720, -60, 0, -60], dur: 12, cover: true,
-      kick: 'HAVENBROOK', title: 'Under budget.<br><em>Over-delivered.</em>',
-      body: 'Every requirement of the brief, met — with headroom left for the parks and streets that make it feel like a town.' },
+      kick: 'Conclusion', title: 'Why it works', pts: [
+        'Students get campus, housing, the clinic, and coffee — no car needed',
+        'Families get the school, pediatricians, groceries, and the park',
+        'Seniors get the full care loop — home visits to hospice — on one quiet side of town',
+        `And the whole town lands at <b>${money(spent)}</b>, under the $10M cap`] },
+    { cam: [620, 520, 690, -60, 0, -70], dur: 10, dark: true,
+      kick: 'References', title: 'Where our numbers came from', pts: [
+        'Our Town Healthcare System — project brief + budget sheet (class handout)',
+        'U.S. Census QuickFacts — the 50 / 30 / 20 college-town mix',
+        'American Planning Association — complete-communities siting guidance',
+        'Three.js — we built and rendered the town as a walkable 3D world'],
+      team: 'Abhinav Mishra · Dinesh Yara · Davi Ogland' },
   ];
 
   const HOLD_MS = 9500;
-  let on = false, i = -1, timer = 0, capTimer = 0, paused = false;
+  let on = false, i = -1, timer = 0, capTimer = 0, paused = false, vidOK = false;
 
   function caption(s, idx) {
     const bits = [];
     if (s.stats) {
       bits.push(`<div class="stats">${stat(s.stats[0], s.stats[1])}${stat(s.stats[2], s.stats[3])}${stat(s.stats[4], s.stats[5])}</div>`);
-    } else if (s.budget) {
-      const segs = [['health', 'Healthcare', byCat.health || 0], ['community', 'Community', byCat.community || 0]];
-      bits.push(`<div class="bud"><div class="track">` +
-        segs.map(([c, , v]) => `<i style="width:${v / BUDGET * 100}%;background:${CATEGORY_COLORS[c]}"></i>`).join('') +
-        `<i style="width:${(BUDGET - spent) / BUDGET * 100}%;background:rgba(238,244,246,.22)"></i></div>` +
-        `<div class="rows">` +
-        segs.map(([c, l, v]) => `<span class="dot" style="background:${CATEGORY_COLORS[c]}"></span><b>${l}</b> ${money(v)} &nbsp;·&nbsp; `).join('') +
-        `<span class="dot" style="background:rgba(238,244,246,.4)"></span><b>Free sites</b> campus + housing &nbsp;·&nbsp; ` +
-        `<b>Headroom</b> ${money(BUDGET - spent)}</div></div>`);
+    } else if (s.sheet) {
+      const mk = cat => numd.filter(b => b.cat === cat)
+        .map(b => `<div class="row"><i>${String(b.num).padStart(2, '0')}</i><em>${b.name}</em><b>${fmt(b.cost)}</b></div>`).join('');
+      bits.push(`<div class="sheet">` +
+        `<div class="col"><div class="colh">Healthcare <span>${money(byCat.health || 0)}</span></div>${mk('health')}</div>` +
+        `<div class="col"><div class="colh">Community <span>${money(byCat.community || 0)}</span></div>${mk('community')}</div></div>` +
+        `<div class="foot">Spent <b>${money(spent)}</b> of ${money(BUDGET)} · <b>${money(BUDGET - spent)}</b> unspent · university + housing were donated</div>`);
+    } else if (s.pts) {
+      bits.push(`<ul class="pts">${s.pts.map(p => `<li>${p}</li>`).join('')}</ul>`);
     } else {
       bits.push(`<div class="body">${s.body}</div>`);
     }
-    return `<div class="kick">${s.kick}</div><h1${s.cover ? ' class="big"' : ''}>${s.title}</h1>` + bits.join('');
+    return `<div class="kick">${s.kick}</div><h1${s.cover ? ' class="big"' : ''}>${s.title}</h1>` + bits.join('') +
+      (s.team ? `<div class="team">${s.team}</div>` : '');
   }
 
   function show(idx) {
     i = idx;
     const s = SLIDES[i];
-    const w = W();
-    window.__flyTo(...s.cam.map(v => v * w), Math.max(1.8, s.dur * .72));
+    // film-cut: background dips through black between slides (skipped on open)
+    if (idx > 0 && dip.animate) dip.animate(
+      [{ opacity: 0 }, { opacity: .62, offset: .42 }, { opacity: 0 }],
+      { duration: 900, easing: 'ease-in-out' });
+    if (!vidOK) {   // fallback: live camera flight when the video can't play
+      const w = W();
+      window.__flyTo(...s.cam.map(v => v * w), Math.max(1.8, s.dur * .72));
+    }
     cap.classList.remove('in'); cap.classList.add('out');
     clearTimeout(capTimer);
     capTimer = setTimeout(() => {
@@ -174,7 +257,7 @@ export function installDeck() {
 
   const HUD_CHROME = ['hudUI', 'hint', 'compass', 'labels', 'legend', 'titlecard', 'hud'];
   const hudStash = {};
-  function start() {
+  async function start() {
     if (on || window.__mapOn) return;   // ortho map view can't fly the slide shots
     on = true; paused = false;
     window.__endTour && window.__endTour();
@@ -185,6 +268,18 @@ export function installDeck() {
     HUD_CHROME.forEach(id => { const el = document.getElementById(id);
       if (el) { hudStash[id] = el.style.display; el.style.display = 'none'; } });
     root.classList.add('on');
+    // video background: the orbit loop plays over a paused 3D renderer —
+    // PRESENT then costs a video decode, not the whole town per frame.
+    // If the file can't play (missing/unsupported) the live flights stay.
+    const vid = root.querySelector('.bgvid');
+    vid.muted = true;
+    // whenever play() actually resolves (now or later), flip to video mode —
+    // a 2.5s bound keeps a stalled fetch from freezing the opening slide
+    const played = vid.play().then(() => {
+      vidOK = true;
+      window.__setPaused && window.__setPaused(true);
+    }).catch(() => {});
+    await Promise.race([played, new Promise(r => setTimeout(r, 2500))]);
     // interior exit restores the saved outdoor pose at +190ms — let it land
     // before the opening flight, or the snap stomps the tween mid-flight
     wasIn ? setTimeout(() => on && show(0), 260) : show(0);
@@ -198,6 +293,9 @@ export function installDeck() {
     HUD_CHROME.forEach(id => { const el = document.getElementById(id);
       if (el) el.style.display = hudStash[id] ?? ''; });
     document.getElementById('uiBtnDeck')?.classList.remove('on');
+    root.querySelector('.bgvid')?.pause();
+    vidOK = false;
+    window.__setPaused && window.__setPaused(false);   // live scene resumes
     const w = W();
     window.__flyTo(540 * w, 620 * w, 660 * w, -30 * w, 0, -40 * w, 2.2);   // home aerial
   }

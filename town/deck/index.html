@@ -36,6 +36,11 @@
   h1.cover { font-size:clamp(52px,7.5vw,86px); letter-spacing:.5px; }
   h1 em { font-style:italic; font-weight:400; }
   .body { font-size:clamp(13px,1.35vw,15px); line-height:1.66; color:var(--sub); max-width:480px; }
+  .pts { list-style:none; max-width:560px; }
+  .pts li { font-size:clamp(12px,1.15vw,13.5px); line-height:1.5; color:var(--sub);
+    padding-left:18px; position:relative; margin-bottom:7px; }
+  .pts li::before { content:'\2014'; position:absolute; left:0; color:var(--dim); }
+  .pts li b { color:var(--ink); font-weight:600; }
 
   .stats { display:flex; gap:34px; margin-top:24px; }
   .st b { display:block; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
@@ -59,6 +64,26 @@
     text-align:right; color:var(--papersub); font-size:12.5px; line-height:2; letter-spacing:.3px; }
   .paper .side b { font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
     font-size:20px; color:var(--paperink); font-weight:500; display:block; }
+  .paper .pts li { color:var(--papersub); }
+  .paper .pts li b { color:var(--paperink); }
+  .paper .pts li::before { color:rgba(22,50,62,.42); }
+  /* budget sheet slide — itemized table, two columns */
+  .sheet { position:absolute; left:7.5%; right:7.5%; top:22%; display:flex; gap:5%; }
+  .sheet .col { flex:1; }
+  .sheet .colh { font-size:11.5px; letter-spacing:2.4px; text-transform:uppercase;
+    color:var(--paperink); font-weight:600; margin-bottom:14px;
+    display:flex; justify-content:space-between; border-bottom:1px solid rgba(22,50,62,.25); padding-bottom:9px; }
+  .sheet .colh span { color:var(--papersub); font-weight:400; }
+  .sheet .row { display:flex; font-size:12px; line-height:2.5; color:var(--papersub); }
+  .sheet .row i { font-style:normal; color:rgba(22,50,62,.4); width:24px; flex:none; }
+  .sheet .row em { font-style:normal; flex:1; padding-right:10px; }
+  .sheet .row b { color:var(--paperink); font-weight:600; white-space:nowrap; }
+  .sheet .row.free i, .sheet .row.free em { color:rgba(22,50,62,.42); }
+  .sheet .row.free b { color:var(--papersub); font-weight:400; }
+  .sheetfoot { position:absolute; left:7.5%; right:7.5%; bottom:9.5%;
+    font-size:12px; color:var(--papersub); border-top:1px solid rgba(22,50,62,.25);
+    padding-top:12px; letter-spacing:.3px; display:flex; justify-content:space-between; }
+  .sheetfoot b { color:var(--paperink); font-weight:600; }
 
   /* chrome: brand, counter, progress — hairlines only */
   .brand { position:fixed; left:48px; top:22px; z-index:9; font-size:10px; letter-spacing:2.6px;
@@ -97,14 +122,20 @@
     <div class="bg" style="background-image:url('shots/01-cover.jpg')"></div><div class="scrim"></div>
     <div class="cap"><div class="kick">HST project &middot; a digital town</div>
       <h1 class="cover"><em>HAVENBROOK</em></h1>
-      <div class="body">A community planned around care — a full town designed, budgeted and built to a $10,000,000 brief.</div></div>
+      <div class="body">A town we designed around a medical school — every building named, every dollar counted.</div>
+      <div class="body" style="margin-top:16px;font-size:10.5px;letter-spacing:2.4px;text-transform:uppercase;color:var(--dim)">Abhinav Mishra &middot; Dinesh Yara &middot; Davi Ogland</div></div>
   </section>
 
   <section class="slide">
     <div class="bg" style="background-image:url('shots/02-plan.jpg')"></div><div class="scrim"></div>
     <div class="cap"><div class="kick">The brief</div>
-      <h1>One town, ten rules</h1>
-      <div class="body">A medical university anchors the plan, housing surrounds it, and at least seven healthcare and three community facilities had to fit inside $10M.</div>
+      <h1>What we had to build</h1>
+      <ul class="pts">
+        <li>A town growing around a new medical university — donated, off-budget</li>
+        <li>A housing development — also donated</li>
+        <li>At least 7 healthcare facilities and 3 community locations</li>
+        <li>A real name on every building, all inside <b>$10,000,000</b></li>
+      </ul>
       <div class="stats">
         <div class="st"><b>$9.95M</b><span>spent of $10M</span></div>
         <div class="st"><b>13</b><span>healthcare sites</span></div>
@@ -114,66 +145,174 @@
   </section>
 
   <section class="slide">
+    <div class="bg" style="background-image:url('shots/05-preserve.jpg')"></div><div class="scrim"></div>
+    <div class="cap"><div class="kick">Population &amp; demographics</div>
+      <h1>Who lives here</h1>
+      <ul class="pts">
+        <li>Half are <b>college students</b> — flats and a student clinic hug the campus</li>
+        <li>About a third are <b>families</b> — houses cluster around the K-12</li>
+        <li>One in five is <b>65+</b> — senior living and hospice sit in the quiet east</li>
+        <li>That mix is why the map looks the way it does</li>
+      </ul>
+      <div class="stats">
+        <div class="st"><b>50%</b><span>college students</span></div>
+        <div class="st"><b>30%</b><span>families</span></div>
+        <div class="st"><b>20%</b><span>adults 65+</span></div>
+      </div></div>
+  </section>
+
+  <section class="slide">
     <div class="bg" style="background-image:url('shots/03-campus.jpg')"></div><div class="scrim"></div>
-    <div class="cap"><div class="kick">The anchor &middot; provided free</div>
+    <div class="cap"><div class="kick">The anchor &middot; donated, off-budget</div>
       <h1>University School of Medicine</h1>
-      <div class="body">A real campus at the town's heart — medical school, library, anatomy and clinical halls around a central quadrangle — the reason the town exists.</div></div>
+      <ul class="pts">
+        <li>Med school, the Marchand library, and Whitmore + Caldecott halls around one quad</li>
+        <li>Sits at the town&rsquo;s center — every district zones outward from it</li>
+        <li>Student flats wrap the west and south edges</li>
+        <li>It&rsquo;s why the town exists, so it gets the best spot</li>
+      </ul></div>
   </section>
 
   <section class="slide">
     <div class="bg" style="background-image:url('shots/04-wellness.jpg')"></div><div class="scrim"></div>
     <div class="cap"><div class="kick">#3&ndash;15 &middot; Wellness Way</div>
-      <h1>Care within reach</h1>
-      <div class="body">Havenbrook General sits one block from EMS on the Wellness Way spine — thirteen facilities from diagnostics to hospice, minutes from every district.</div></div>
+      <h1>Thirteen ways to get care</h1>
+      <ul class="pts">
+        <li><b>Emergency:</b> Havenbrook General + Hartline EMS, a block apart on the Wellness spine</li>
+        <li><b>Everyday:</b> Thacher clinic, Brookfield physicians, Marigold dental, Parallax optical, Argus labs</li>
+        <li><b>Long-term:</b> Stoneleigh rehab, Stillwater behavioral health, Halcyon House, Stillpoint hospice</li>
+        <li><b>Public health:</b> the county Health Department &middot; <b>At home:</b> Innisfree visits</li>
+      </ul></div>
   </section>
 
   <section class="slide">
     <div class="bg" style="background-image:url('shots/05-preserve.jpg')"></div><div class="scrim"></div>
-    <div class="cap"><div class="kick">#2 &middot; Residential West &middot; provided free</div>
+    <div class="cap"><div class="kick">#2 &middot; Residential West &middot; donated, off-budget</div>
       <h1>The Preserve</h1>
-      <div class="body">The donated housing development — cottage rows, duplexes and townhouses around Preserve Commons, wrapped around the campus it serves.</div></div>
+      <ul class="pts">
+        <li>The required housing development — cottages, duplexes, townhouses</li>
+        <li>Preserve Commons apartments fill the middle of the neighborhood</li>
+        <li>Scholar&rsquo;s Walk + University Lofts take students; Midtown Flats takes downtown</li>
+        <li>Nobody is more than a short walk from campus or a bus route</li>
+      </ul></div>
   </section>
 
   <section class="slide">
     <div class="bg" style="background-image:url('shots/06-park.jpg')"></div><div class="scrim"></div>
-    <div class="cap"><div class="kick">#22 &middot; Willow Creek Park</div>
-      <h1>The third places</h1>
-      <div class="body">Pond, trails, playgrounds and the bandshell — the social heart — with Main Street and the Commons mall a short walk south.</div></div>
+    <div class="cap"><div class="kick">Community &middot; 11 locations</div>
+      <h1>The parts that aren&rsquo;t medicine</h1>
+      <ul class="pts">
+        <li><b>Errands:</b> Havenbrook Commons mall, Masterson&rsquo;s, Olsen&rsquo;s Market, Bellwether Pharmacy</li>
+        <li><b>Food:</b> The Orchard Table, The Painted Coyote, The Whippoorwill coffeehouse</li>
+        <li><b>Outside:</b> Willow Creek Park — pond, trails, bandshell</li>
+        <li><b>The boring-but-needed:</b> post office, school district, Quarry Hill Museum</li>
+      </ul></div>
   </section>
 
   <section class="slide">
     <div class="bg" style="background-image:url('shots/07-senior.jpg')"></div><div class="scrim"></div>
     <div class="cap"><div class="kick">#14&ndash;15 &middot; the quiet east</div>
-      <h1>Ageing in place</h1>
-      <div class="body">Silver Oaks senior living and Tranquil Harbor hospice in the leafy east — a full care loop from independent living to end-of-life.</div></div>
+      <h1>A place to grow old</h1>
+      <ul class="pts">
+        <li>Halcyon House — assisted living + memory care around a courtyard garden</li>
+        <li>Stillpoint Hospice next door, so the hardest visits stay short and private</li>
+        <li>Innisfree home health means seniors keep their own homes longer</li>
+        <li>The whole block sits on Sunset Ridge — farthest from traffic, closest to quiet</li>
+      </ul></div>
+  </section>
+
+  <section class="slide">
+    <div class="bg" style="background-image:url('shots/02-plan.jpg')"></div><div class="scrim"></div>
+    <div class="cap"><div class="kick">Layout &amp; placement</div>
+      <h1>How we arranged it</h1>
+      <ul class="pts">
+        <li>Streets first: two arterials cross at the campus, 18 named streets fill the grid</li>
+        <li>Hospital and EMS share the Wellness Way spine — minutes from anywhere</li>
+        <li>Shops run along Commerce Blvd; the K-12 sits inside the neighborhoods</li>
+        <li>Every address is within two blocks of a through-street — that&rsquo;s the EMS rule</li>
+      </ul></div>
+  </section>
+
+  <section class="slide">
+    <div class="bg" style="background-image:url('shots/06-park.jpg')"></div><div class="scrim"></div>
+    <div class="cap"><div class="kick">Decision-making</div>
+      <h1>What we traded</h1>
+      <ul class="pts">
+        <li>The two donated sites freed ~$4.5M — so we bought 13 small facilities instead of one mega-campus</li>
+        <li>Picked the mall over a second park — the Preserve already covers green space</li>
+        <li>Senior care went to the quiet east instead of paying downtown frontage</li>
+        <li>Stopped at 26 buildings and banked the leftover <b>$50,000</b> instead of forcing a 27th</li>
+      </ul></div>
   </section>
 
   <section class="slide paper">
-    <div class="cap"><div class="kick">The ledger</div>
-      <h1>$9.95M of $10.00M</h1>
-      <div class="body">Every requirement of the brief, priced and placed — with headroom kept for the parks, streets and trees that make it feel like a town.</div>
-      <div class="bud"><div class="track">
-        <i style="width:62.5%;background:#c0392b"></i><i style="width:37%;background:#2471a3"></i><i style="width:.5%;background:rgba(22,50,62,.18)"></i>
-      </div>
-      <div class="rows">
-        <span class="dot" style="background:#c0392b"></span><b>Healthcare</b> 13 facilities — $6.25M<br>
-        <span class="dot" style="background:#2471a3"></span><b>Community</b> 11 locations — $3.70M<br>
-        <span class="dot" style="background:#8a9490"></span><b>Free sites</b> university + housing &nbsp;&middot;&nbsp; <b>Headroom</b> $0.05M
-      </div></div>
+    <div class="cap" style="top:5.5%;transform:none;max-width:none">
+      <div class="kick">The budget</div>
+      <h1 style="margin-bottom:0">Every dollar, accounted for</h1>
     </div>
-    <div class="side">
-      <b>$1.5M</b>largest spend — General Hospital<br>
-      <b>$400k</b>smallest walk — EMS reach<br>
-      <b>26</b>numbered facilities<br>
-      <b>100%</b>uniquely named
+    <div class="sheet">
+      <div class="col"><div class="colh">Healthcare <span>$6.25M &middot; 13 sites</span></div>
+        <div class="row"><i>03</i><em>Havenbrook General Hospital</em><b>$1.5M</b></div>
+        <div class="row"><i>04</i><em>Hartline EMS Station</em><b>$400k</b></div>
+        <div class="row"><i>05</i><em>County Health Department</em><b>$250k</b></div>
+        <div class="row"><i>06</i><em>Argus Diagnostics Laboratory</em><b>$100k</b></div>
+        <div class="row"><i>07</i><em>Stoneleigh Rehabilitation Center</em><b>$750k</b></div>
+        <div class="row"><i>08</i><em>Stillwater Behavioral Health</em><b>$500k</b></div>
+        <div class="row"><i>09</i><em>Thacher Student Health Clinic</em><b>$200k</b></div>
+        <div class="row"><i>10</i><em>Marigold Dental Studio</em><b>$300k</b></div>
+        <div class="row"><i>11</i><em>Parallax Optical</em><b>$300k</b></div>
+        <div class="row"><i>12</i><em>Brookfield Family Physicians</em><b>$400k</b></div>
+        <div class="row"><i>13</i><em>Innisfree Home Health</em><b>$300k</b></div>
+        <div class="row"><i>14</i><em>Halcyon House Senior Living</em><b>$750k</b></div>
+        <div class="row"><i>15</i><em>Stillpoint Hospice</em><b>$500k</b></div>
+      </div>
+      <div class="col"><div class="colh">Community <span>$3.70M &middot; 11 sites</span></div>
+        <div class="row"><i>16</i><em>Masterson&rsquo;s Department Store</em><b>$500k</b></div>
+        <div class="row"><i>17</i><em>Havenbrook Commons Mall</em><b>$1.0M</b></div>
+        <div class="row"><i>18</i><em>Bellwether Pharmacy</em><b>$500k</b></div>
+        <div class="row"><i>19</i><em>Quarry Hill Museum</em><b>$500k</b></div>
+        <div class="row"><i>20</i><em>Havenbrook Unified School District</em><b>$300k</b></div>
+        <div class="row"><i>21</i><em>The Orchard Table</em><b>$250k</b></div>
+        <div class="row"><i>22</i><em>Willow Creek Park</em><b>$200k</b></div>
+        <div class="row"><i>23</i><em>Havenbrook Post Office</em><b>$150k</b></div>
+        <div class="row"><i>24</i><em>Olsen&rsquo;s Market</em><b>$100k</b></div>
+        <div class="row"><i>25</i><em>The Whippoorwill Coffeehouse</em><b>$100k</b></div>
+        <div class="row"><i>26</i><em>The Painted Coyote</em><b>$100k</b></div>
+        <div class="row free"><i>01</i><em>University School of Medicine campus</em><b>donated</b></div>
+        <div class="row free"><i>02</i><em>The Preserve housing development</em><b>donated</b></div>
+      </div>
+    </div>
+    <div class="sheetfoot">
+      <span>Spent <b>$9.95M</b> of <b>$10.00M</b> &middot; <b>$50,000</b> left unspent</span>
+      <span>26 numbered buildings &middot; every one named</span>
     </div>
   </section>
 
   <section class="slide">
     <div class="bg" style="background-image:url('shots/08-close.jpg')"></div><div class="scrim"></div>
-    <div class="cap"><div class="kick">HAVENBROOK</div>
-      <h1 class="cover">Under budget.<br><em>Over-delivered.</em></h1>
-      <div class="body">A community planned around care.</div></div>
+    <div class="cap"><div class="kick">Conclusion</div>
+      <h1>Why it works</h1>
+      <ul class="pts">
+        <li>Students get campus, housing, the clinic, and coffee — no car needed</li>
+        <li>Families get the school, pediatricians, groceries, and the park</li>
+        <li>Seniors get the full care loop — home visits to hospice — on one quiet side of town</li>
+        <li>And the whole town lands at <b>$9.95M</b>, under the $10M cap</li>
+      </ul></div>
+  </section>
+
+  <section class="slide paper">
+    <div class="cap"><div class="kick">References</div>
+      <h1>Where our numbers came from</h1>
+      <ul class="pts" style="margin-top:10px">
+        <li><b>Our Town Healthcare System</b> — project brief + budget sheet (class handout)</li>
+        <li><b>U.S. Census QuickFacts</b> — the 50 / 30 / 20 college-town mix</li>
+        <li><b>American Planning Association</b> — complete-communities siting guidance</li>
+        <li><b>Three.js</b> — we built and rendered the town as a walkable 3D world</li>
+      </ul></div>
+    <div class="side">
+      <b>Abhinav Mishra</b><br><b>Dinesh Yara</b><br><b>Davi Ogland</b>
+      <div style="margin-top:14px;font-size:11px;letter-spacing:1.6px;text-transform:uppercase">Havenbrook &middot; HST project</div>
+    </div>
   </section>
 
 </div>
