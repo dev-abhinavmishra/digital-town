@@ -175,7 +175,7 @@ function flatRoofMat() {
     const skin = roofSkin();
     _flatRoofs[i].map = skin.map;
     _flatRoofs[i].bumpMap = skin.bump; _flatRoofs[i].bumpScale = .04;
-    _flatRoofs[i].roughnessMap = skin.rough; _flatRoofs[i].roughness = 1;
+    _flatRoofs[i].roughnessMap = skin.rough; _flatRoofs[i].roughness = finish[1];
   }
   return _flatRoofs[i];
 }
@@ -810,8 +810,10 @@ function campusb(s) { // campus brick academic block
   g.add(b);
   const r = gableRoof(w, 4.5, d, roofM); r.position.y = s.h; g.add(r);
   g.add(box(w * .3, 1.2, .8, mat('#e8e2d4'), 0, s.h * .55, d / 2 + .2)); // limestone band
+  g.add(box(w + .7, .55, d + .5, mat('#e8e2d4'), 0, s.h - .35, 0));      // eave cornice
   winDressMesh(g, w, d, s.h, { rows: 3, cols: Math.round(w / 7), faces: 'fbs',
-    trim: '#e8e2d4', transom: true, spandrel: true, fins: true, reveal: true });
+    trim: '#e8e2d4', transom: true, spandrel: true, fins: true, reveal: true,
+    quoins: { color: '#e8e2d4' } });
   door(g, 6, 4.5, 0, d / 2 + .3, 0, '#2c3a42', { recess: true, portico: true,
     porticoC: '#e8e2d4' });
   // steps + hedges flanking entry
@@ -890,6 +892,15 @@ function senior(s) { // assisted living — U-shaped courtyard
   mk(w, d * .34, 0, -d * .33);            // back wing — south face at z=-d*.16
   mk(w * .3, d * .61, -w * .35, d * .145); // west wing abuts it (no overlap)
   mk(w * .3, d * .61, w * .35, d * .145);  // east wing abuts it
+  // window dressing per wing — winDress anchors at origin, so offset sub-groups
+  for (const [ww, dd, x, z] of [[w, d * .34, 0, -d * .33],
+      [w * .3, d * .61, -w * .35, d * .145], [w * .3, d * .61, w * .35, d * .145]]) {
+    const wg = new THREE.Group(); wg.position.set(x, 0, z); g.add(wg);
+    winDressMesh(wg, ww, dd, s.h, { rows: 4, cols: Math.round(ww / 7),
+      faces: 'fbs', trim: '#e8ddc8', transom: true, reveal: true });
+  }
+  // courtyard entry under the porte-cochère (back wing's south wall)
+  door(g, 5, 4, 0, -d * .33 + d * .17 + .2, 0, '#4a3a30', { recess: true });
   // porte-cochère
   g.add(box(14, .7, 10, roofM, 0, 5.2, -d * .33 + d * .17 + 4));
   g.add(cyl(.35, .35, 5.2, mat('#e8e2d4'), -6, 0, -d * .33 + d * .17 + 7));
@@ -915,6 +926,11 @@ function hospice(s) {
   g.add(box(w * .7, .5, 5, mat('#a58a68'), 0, .4, d / 2 + 2.5));
   for (let i = -3; i <= 3; i++) g.add(cyl(.28, .28, 3.6, mat('#efe8da'), i * w * .09, .6, d / 2 + 4));
   g.add(box(w * .7, .4, 5.5, roofM, 0, 4.4, d / 2 + 2.5));
+  door(g, 3.2, 3.4, 0, d / 2 + .2, 0, '#3a4a40', { recess: true });      // porch entry
+  // plinth + eave frieze bands
+  g.add(box(w + .5, .6, d + .4, mat('#c9bfa8'), 0, .3, 0));
+  for (const s2 of [-1, 1])
+    g.add(box(w + .4, .3, .24, mat('#efe8da'), 0, s.h - .3, s2 * (d / 2 + .02)));
   sign(g, 'STILLPOINT HOSPICE', w * .6, s.h - 2, d / 2 + .4, { bg: '#4d6155', font: 'bold 38px Georgia' });
   return g;
 }
@@ -1127,6 +1143,15 @@ function school(s) {
   mk(w * .34, d * .34, w * .3, -d * .22, s.h + 3);      // gym (taller)
   mk(w * .3, d * .3, -w * .32, d * .28, s.h - 2);       // classroom wing
   sign(g, 'HAVENBROOK UNIFIED', w * .4, s.h - 1.6, -d * .26 + d * .2 + .3, { bg: '#7a4b26', font: 'bold 36px Georgia' });
+  // window dressing on the two classroom wings (winDress anchors at origin)
+  const sw1 = new THREE.Group(); sw1.position.set(-w * .18, 0, -d * .26); g.add(sw1);
+  winDressMesh(sw1, w * .55, d * .4, s.h, { rows: 2, cols: Math.round(w * .55 / 8),
+    faces: 'fbs', trim: '#e8dcc0', reveal: true, spandrel: true });
+  const sw2 = new THREE.Group(); sw2.position.set(-w * .32, 0, d * .28); g.add(sw2);
+  winDressMesh(sw2, w * .3, d * .3, s.h - 2, { rows: 2, cols: Math.round(w * .3 / 8),
+    faces: 'fbs', trim: '#e8dcc0', reveal: true });
+  // gym clerestory band + sill course on its street face
+  g.add(box(w * .3, 1.3, .3, mat('#e8dcc0'), w * .3, s.h + 1.4, -d * .22 + d * .17));
   // marquee sign by the road
   g.add(box(6, 2.6, .5, mat('#7a4b26'), w * .1, 0, d / 2 + 6));
   const mq = signTexture('HAVENBROOK\nUNIFIED', { bg: '#3a2a18', fg: '#ffd98a', w: 256, h: 96, font: 'bold 30px Arial', border: false });
@@ -1307,6 +1332,31 @@ function church(s) {
   rose.position.set(sx + 2.4, h - 2, 0); rose.rotation.y = Math.PI / 2; g.add(rose);
   // arched door
   door(g, 3.4, 4.4, w * .15, d / 2 + .2, 0, '#5a3e2e');
+  // buttresses + hood moulds + plinth + eave cornice on the nave flanks —
+  // texture windows (cols=6) sit at the gap centres; moulds echo them in 3D
+  const cP = [];
+  for (const sz of [-1, 1]) {
+    for (const bx of [-7.33, -3.66, 0, 7.33]) {          // gaps between the 6 bays
+      cP.push({ geo: new THREE.BoxGeometry(.7, 5.6, .55), color: '#cfc6b0',
+        x: bx, y: 2.8, z: sz * (d / 2 + .22) });
+      cP.push({ geo: new THREE.BoxGeometry(.55, 1.2, .75), color: '#cfc6b0',
+        x: bx, y: 6.2, z: sz * (d / 2 + .3) });           // stepped weathering cap
+    }
+    for (const mx of [-9.17, -5.5, -1.83, 1.83, 5.5, 9.17]) {
+      cP.push({ geo: new THREE.BoxGeometry(1.7, .35, .14), color: '#efe8da',
+        x: mx, y: 5.5, z: sz * (d / 2 + .1) });           // hood mould over each lancet
+      cP.push({ geo: new THREE.BoxGeometry(1.5, .22, .12), color: '#efe8da',
+        x: mx, y: 1.9, z: sz * (d / 2 + .1) });           // sill
+    }
+    cP.push({ geo: new THREE.BoxGeometry(w + .4, .35, .3), color: '#efe8da',
+      x: 0, y: h - .3, z: sz * (d / 2 + .02) });          // eave cornice
+  }
+  cP.push({ geo: new THREE.BoxGeometry(w + .5, .7, d + .5), color: '#b7ad97',
+    x: 0, y: .35, z: 0 });                                // plinth
+  cP.push({ geo: new THREE.BoxGeometry(5, .35, 2.4), color: '#b9b2a2',
+    x: w * .15, y: .12, z: d / 2 + 1.4 });                // entry steps
+  const cM = new THREE.Mesh(colored(cP), VCOL());
+  cM.castShadow = cM.receiveShadow = true; g.add(cM);
   return g;
 }
 
@@ -1319,6 +1369,8 @@ function gas(s) {
     signText: 'HAVEN FUEL', signBg: '#2e6b46', brickLines: false }), mat('#8d8578'));
   g.add(k);
   parapet(g, w * .45, d * .5, 5.5);
+  door(g, 2.2, 2.8, -w * .2, -d * .15 + d * .25 + .2, 0, '#2c3a42');    // kiosk entry
+  awning(g, w * .4, -w * .2, 3.4, -d * .15 + d * .25 + .6, '#2e6b46', false);
   // canopy
   g.add(box(w * .8, .7, d * .6, mat('#e8e4da'), w * .1, 5.8, d * .15));
   g.add(box(w * .8, .5, d * .6 + .4, mat('#2e6b46'), w * .1, 6.5, d * .15));

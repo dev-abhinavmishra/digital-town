@@ -141,26 +141,27 @@ export function buildStreetscape(scene) {
      Canvas bands sit along the v axis (across the road): 'h' roads use it
      directly, 'v' roads get the canvas transposed. Keyed by axis+width. */
   const _wearM = new Map();
-  const wearMat = (axis, w) => {
-    const key = `${axis}:${w}`;
+  const wearMat = (axis, w, lanes) => {
+    const key = `${axis}:${w}:${lanes}`;
     if (_wearM.has(key)) return _wearM.get(key);
     const S = 256, [c, x] = makeCanvas(S, S);
     x.clearRect(0, 0, S, S);
     if (axis === 'v') x.setTransform(0, 1, 1, 0, 0, 0);  // transpose: bands on x
-    const lanes = w >= 16 ? 4 : 2;
-    for (let i = 0; i < lanes; i++) {
-      const lc = (i + .5) / lanes;
-      for (const s of [-1, 1]) {                     // twin polished tracks
-        const wy = (lc + s * .85 / w) * S, bw = Math.max(3, .62 / w * S);
-        const g = x.createLinearGradient(0, wy - bw, 0, wy + bw);
-        g.addColorStop(0, 'rgba(16,18,20,0)');
-        g.addColorStop(.5, `rgba(16,18,20,${(.10 + R() * .06).toFixed(3)})`);
-        g.addColorStop(1, 'rgba(16,18,20,0)');
-        x.fillStyle = g; x.fillRect(0, wy - bw, S, bw * 2);
+    // lanes: |offsets| from centreline - actual lane centres, mirrored ±
+    for (const lp of lanes)
+      for (const sg of [-1, 1]) {
+        const lc = .5 + lp * sg / w;                 // lane centre at ±lp m
+        for (const s of [-1, 1]) {                   // twin polished tracks
+          const wy = (lc + s * .85 / w) * S, bw = Math.max(3, .62 / w * S);
+          const g = x.createLinearGradient(0, wy - bw, 0, wy + bw);
+          g.addColorStop(0, 'rgba(16,18,20,0)');
+          g.addColorStop(.5, `rgba(16,18,20,${(.10 + R() * .06).toFixed(3)})`);
+          g.addColorStop(1, 'rgba(16,18,20,0)');
+          x.fillStyle = g; x.fillRect(0, wy - bw, S, bw * 2);
+        }
+        x.fillStyle = 'rgba(14,15,16,.10)';          // dripped-oil lane centre
+        x.fillRect(0, lc * S - 1, S, 2);
       }
-      x.fillStyle = 'rgba(14,15,16,.10)';            // dripped-oil lane center
-      x.fillRect(0, lc * S - 1, S, 2);
-    }
     for (const e of [0, 1]) {                        // gutter grime at edges
       const g = x.createLinearGradient(0, e ? S : 0, 0, e ? S * .91 : S * .09);
       g.addColorStop(0, 'rgba(20,22,24,.16)'); g.addColorStop(1, 'rgba(20,22,24,0)');
@@ -289,19 +290,28 @@ export function buildStreetscape(scene) {
     CITY.roads++;
 
     // wheel-track wear decal — v axis spans the road width exactly once so
-    // band positions land on lanes; u repeats every 48 m along the span
+    // band positions land on lanes; u repeats every 48 m along the span.
+    // lane centres: TWLTL turns sit inside the ±2.15 double-yellow, so
+    // through lanes on Commerce run at 3.875/7.45; standard arterials split
+    // the remaining width in four; minor streets wear their two centres.
     {
-      const wg = new THREE.PlaneGeometry(r.axis === 'v' ? r.w : len,
-        r.axis === 'v' ? len : r.w);
-      const wuv = wg.attributes.uv, pw = wg.parameters.width,
-            ph = wg.parameters.height;
-      for (let i = 0; i < wuv.count; i++)
-        wuv.setXY(i, wuv.getX(i) * pw / (r.axis === 'v' ? pw : 48),
-          wuv.getY(i) * ph / (r.axis === 'v' ? 48 : ph));
-      wg.rotateX(-Math.PI / 2);
-      wg.translate(r.axis === 'v' ? r.c : mid, Y + .003,
-        r.axis === 'v' ? mid : r.c);
-      bin.add(wg, wearMat(r.axis, r.w), 0, 0, 0);
+      const laneOffs = r.name === 'Commerce Blvd' ? [3.875, 7.45]
+        : r.w >= 16 ? [.25 + r.w / 8, 3 * r.w / 8 - .35]
+        : [r.w >= 11 ? r.w / 4 - .35 : r.w / 4];
+      for (const [s0, s1] of freeRuns(r.a0, r.a1, padCuts.get(r))) {
+        const sl = s1 - s0, smid = (s0 + s1) / 2;
+        const wg = new THREE.PlaneGeometry(r.axis === 'v' ? r.w : sl,
+          r.axis === 'v' ? sl : r.w);
+        const wuv = wg.attributes.uv, pw = wg.parameters.width,
+              ph = wg.parameters.height;
+        for (let i = 0; i < wuv.count; i++)
+          wuv.setXY(i, wuv.getX(i) * pw / (r.axis === 'v' ? pw : 48),
+            wuv.getY(i) * ph / (r.axis === 'v' ? 48 : ph));
+        wg.rotateX(-Math.PI / 2);
+        wg.translate(r.axis === 'v' ? r.c : smid, Y + .003,
+          r.axis === 'v' ? smid : r.c);
+        bin.add(wg, wearMat(r.axis, r.w, laneOffs), 0, 0, 0);
+      }
     }
 
     const gutCuts = mergeCuts([...padCuts.get(r),

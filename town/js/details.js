@@ -2105,6 +2105,8 @@ export function buildFerrisWheel(scene) {
   const wheel = new THREE.Mesh(colored(wp), VCOL());
   wheel.position.set(fx, Y + HY, fz);
   wheel.castShadow = true;
+  wheel.rotation.y = FACE;                    // static yaw (freeze-safe rest pose)
+  wheel.userData.dynamic = true;              // spins - keep out of mergeStatic
   scene.add(wheel);
 
   const litG = new THREE.SphereGeometry(.3, 6, 5);
@@ -2134,6 +2136,14 @@ export function buildFerrisWheel(scene) {
   for (let i = 0; i < 12; i++)
     cabIM.setColorAt(i, new THREE.Color(TINTS[i % TINTS.length]));
   scene.add(cabIM);
+  const cf0 = Math.cos(FACE), sf0 = Math.sin(FACE);   // initial pose (t = 0)
+  for (let i = 0; i < 12; i++) {
+    const a = i * Math.PI / 6, lx = Math.cos(a) * R0, ly = Math.sin(a) * R0 - 1.7;
+    _p.set(fx + lx * cf0, Y + HY + ly, fz - lx * sf0);
+    _eul.set(0, FACE, 0); _q.setFromEuler(_eul); _mx.compose(_p, _q, _s1);
+    cabIM.setMatrixAt(i, _mx);
+  }
+  cabIM.instanceMatrix.needsUpdate = true;
   ferris = { wheel, cabIM, cx: fx, cy: Y + HY, cz: fz, R0, face: FACE };
 }
 
@@ -2385,6 +2395,7 @@ export function buildWindmill(scene) {
   ]), VCOL());
   head.add(tail);
   head.rotation.y = HEAD;
+  head.userData.dynamic = true;               // yaws - keep out of mergeStatic
   scene.add(head);
   windmill = { head, rotor };
 }
@@ -2462,11 +2473,11 @@ export function buildRain(scene) {
                  v: rf(46, 68), s: rf(.8, 1.3), len: rf(2.4, 4.0) });
   /* crossed quads - a single Y-facing plane goes edge-on to streets that run
      along X; two perpendicular panels keep a visible face from every azimuth */
-  const qA = new THREE.PlaneGeometry(.09, 1); qA.translate(0, -.5, 0);
+  const qA = new THREE.PlaneGeometry(.12, 1); qA.translate(0, -.5, 0);
   const qB = qA.clone(); qB.rotateY(Math.PI / 2);  // anchor at drop head
   const streakG = mergeGeometries([qA, qB]);
   const streakM = new THREE.MeshBasicMaterial({ color: '#d8e6ee',
-    transparent: true, opacity: .4, depthWrite: false,
+    transparent: true, opacity: .55, depthWrite: false,
     side: THREE.DoubleSide, fog: false });
   const rim = new THREE.InstancedMesh(streakG, streakM, drops.length);
   rim.frustumCulled = false;
@@ -2486,13 +2497,19 @@ export function buildRain(scene) {
   const pudM = new M({ color: '#20303a', roughness: .07, metalness: .08 });
   pudM.envMapIntensity = 1.8 * RUNENV.envScale;
   const pudL = [];
+  const ix0 = intersections();                    // keep junction paint clear
   for (const r of ROADS) {
     const len = r.a1 - r.a0;
     for (let a = 14; a < len - 14; a += 30) {
       if (Rr() > .55) continue;
-      const off = rf(-(r.w / 2 - 2.2), r.w / 2 - 2.2);
-      pudL.push({ x: r.axis === 'v' ? r.c + off : r.a0 + a,
-                  z: r.axis === 'v' ? r.a0 + a : r.c + off,
+      const along = r.a0 + a;
+      if (ix0.some(i => r.axis === 'v'
+        ? Math.abs(i.x - r.c) < 12 && Math.abs(i.z - along) < 14
+        : Math.abs(i.z - r.c) < 12 && Math.abs(i.x - along) < 14)) continue;
+      const side = Rr() < .5 ? -1 : 1;            // curbside band, not mid-lane
+      const off = side * rf(r.w / 2 - 4.0, r.w / 2 - 2.2);
+      pudL.push({ x: r.axis === 'v' ? r.c + off : along,
+                  z: r.axis === 'v' ? along : r.c + off,
                   s: rf(1.0, 2.6), ry: rf(0, 6.28) });
     }
   }

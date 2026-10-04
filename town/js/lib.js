@@ -832,8 +832,10 @@ export function skyTexture({ mode = 'day', sunAz = 0, sunEl = .6 } = {}) {
   x.fillStyle = hz; x.fillRect(0, H * .56, W, H * .1);
   // starfield — wrapped-drawn, zenith-weighted, a few bright anchors
   if (mode === 'night') {
+    const Rs = mulberry32(9101);                // dedicated stream: drawing from
+    // global R() would reshuffle every downstream seed between day and night
     for (let i = 0; i < 480; i++) {
-      const sr = R(), sx2 = R() * W, sy = R() * R() * H * .55;
+      const sr = Rs(), sx2 = Rs() * W, sy = Rs() * Rs() * H * .55;
       x.fillStyle = `rgba(235,240,252,${(.2 + sr * .65).toFixed(3)})`;
       for (const ox of [-W, 0, W])
         x.fillRect(sx2 + ox, sy, sr > .86 ? 2 : 1, sr > .86 ? 2 : 1);
@@ -948,6 +950,7 @@ const WATER_T = {
   day:    { sunDir: [900, 750, 620],   sunCol: 0xfff2dd, deep: '#0e2430', foam: '#cfe6ea', glint: .5,  foamAmt: .5  },
   golden: { sunDir: [-1500, 210, 700], sunCol: 0xffb268, deep: '#1d2a33', foam: '#e8c9a0', glint: .85, foamAmt: .4  },
   dusk:   { sunDir: [-1200, 120, 500], sunCol: 0xff9a6a, deep: '#141820', foam: '#4a4a58', glint: .3,  foamAmt: .22 },
+  night:  { sunDir: [-500, 1100, -350], sunCol: 0xaebdd4, deep: '#081018', foam: '#33404c', glint: .35, foamAmt: .22 },
 };
 const _wp = WATER_T[_wt] || WATER_T.day;
 
