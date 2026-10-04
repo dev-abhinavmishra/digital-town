@@ -1329,7 +1329,8 @@ function church(s) {
   // rose window
   const rose = new THREE.Mesh(new THREE.CircleGeometry(1.6, 20),
     new M({ color: '#5a7a9a', roughness: .3, metalness: .2 }));
-  rose.position.set(sx + 2.4, h - 2, 0); rose.rotation.y = Math.PI / 2; g.add(rose);
+  rose.position.set(0, h - 1.6, d / 2 + .08);         // centred on the front gable wall
+  g.add(rose);
   // arched door
   door(g, 3.4, 4.4, w * .15, d / 2 + .2, 0, '#5a3e2e');
   // buttresses + hood moulds + plinth + eave cornice on the nave flanks —
