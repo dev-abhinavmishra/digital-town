@@ -203,6 +203,12 @@ export function upgradeClouds(scene, TIME) {
   scene.traverse(o => {
     if (!o.isSprite || o.userData.atmoPuff) return;
     o.userData.atmoPuff = true;               // never re-upgrade / never self-hit
+    if (o.userData.cirrus) {                  // high ice deck stays a thin streak
+      o.material.color.set(tint);             // still TIME-tinted + unfogged,
+      o.material.fog = false;                 // but no map swap / puffs / rescale,
+      o.material.needsUpdate = true;          // and no rr/R draws consumed
+      return;
+    }
     const m = o.material;
     m.map = variants[vi++ % variants.length];
     m.color.set(tint);
