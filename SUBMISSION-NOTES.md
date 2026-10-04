@@ -8,7 +8,7 @@
 | File | What it is |
 |---|---|
 | `Havenbrook-Presentation.pdf` | 13-page presentation deck (title + 11 content + references), exported from the app's deck |
-| `town-orbit.mp4` | 10-second looping aerial flyover of the town — can be dropped into a title slide or played in class |
+| `town-orbit.mp4` | 20-second looping aerial flyover of the town — can be dropped into a title slide or played in class |
 | The live app | run `node town/server.cjs`, open `http://127.0.0.1:8778`, press **PRESENT** for the narrated slideshow mode, click any building to go inside |
 
 ## Checklist audit
