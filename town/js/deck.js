@@ -132,7 +132,7 @@ export function installDeck() {
               { cam: [430, 420, 770, -40, 0, -40], dur: 9 }], cover: true, hold: 22000,
       kick: 'Our Town Healthcare System project', title: 'HAVENBROOK',
       body: 'The town we designed around a med school — 26 buildings, all named, all budgeted.',
-      team: 'Abhinav Mishra · Dinesh Yara · Davi Ogland' },
+      team: 'Dinesh Yara · Abhinav Mishra · Davi Ogland' },
     /* 02 — THE TOWN (overview): high aerial that pans across all four districts */
     { shots: [{ cam: [60, 780, 560, -20, 0, -60], dur: 11 },
               { cam: [-380, 620, 640, -20, 0, -30], dur: 9 }], hold: 24000,
@@ -252,7 +252,7 @@ export function installDeck() {
         'U.S. Census QuickFacts — the 50 / 30 / 20 college-town mix',
         'American Planning Association — complete-communities siting guidance',
         'Three.js — we built and rendered the town as a walkable 3D world'],
-      team: 'Abhinav Mishra · Dinesh Yara · Davi Ogland' },
+      team: 'Dinesh Yara · Abhinav Mishra · Davi Ogland' },
   ];
 
   const HOLD_MS = 12000;
