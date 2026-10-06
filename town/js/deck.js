@@ -91,6 +91,27 @@ const css = `
 /* film-cut transition: the scene dips through black on every slide change */
 #uiDeck .dip { position:absolute; inset:0; background:#050b0f; opacity:0;
   pointer-events:none; }
+/* corner locator: desaturated ortho map of the whole town; the university is
+   always marked gold, white dots track where this slide's camera lands */
+#uiDeck .mapbox { position:absolute; right:64px; top:76px; width:min(228px,22vw);
+  aspect-ratio:89/80; border:1px solid var(--rule); background:#0a1418;
+  box-shadow:0 10px 30px rgba(0,0,0,.5); opacity:0; transition:opacity .6s .5s; }
+#uiDeck.on .mapbox { opacity:1; }
+#uiDeck .mapbox img { position:absolute; inset:0; width:100%; height:100%;
+  object-fit:cover; display:block; }
+#uiDeck .mapbox i { position:absolute; width:7px; height:7px; border-radius:50%;
+  transform:translate(-50%,-50%); }
+#uiDeck .mapbox i.u { background:#f3d27a; box-shadow:0 0 0 3px rgba(243,210,122,.25); }
+#uiDeck .mapbox i.f { background:#f6fbfd; opacity:0;
+  box-shadow:0 0 0 4px rgba(246,251,253,.22), 0 1px 6px rgba(0,0,0,.8);
+  transition:left .5s ease, top .5s ease, opacity .5s ease; }
+#uiDeck .mapbox .ulab { position:absolute; font-style:normal; font-size:7.5px;
+  letter-spacing:1.4px; text-transform:uppercase; color:#f3d27a;
+  text-shadow:0 1px 4px rgba(0,0,0,.9); transform:translate(11px,-50%);
+  white-space:nowrap; }
+#uiDeck .mapbox .mtag { position:absolute; left:7px; top:5px; font-size:8px;
+  letter-spacing:1.8px; color:rgba(238,244,246,.8);
+  text-shadow:0 1px 4px rgba(0,0,0,.9); }
 `;
 
 export function installDeck() {
@@ -105,13 +126,19 @@ export function installDeck() {
     <div class="brand">${TOWN.name} — a community planned around care</div>
     <div class="x">ESC to exit</div>
     <div class="cap"></div>
+    <div class="mapbox"><img src="deck/shots/minimap.jpg" alt="Town locator map">
+      <span class="mtag">N &uarr;</span>
+      <i class="u" style="left:52.25%;top:33.13%"></i>
+      <em class="ulab" style="left:52.25%;top:33.13%">University</em>
+      <i class="f"></i><i class="f"></i><i class="f"></i></div>
     <div class="meta"><div class="cnt"></div><div class="keys">&#8592; &#8594; navigate &middot; space autoplay</div></div>
     <div class="prog"><i></i></div>
     <div class="edge l"></div><div class="edge r"></div>`;
   document.body.appendChild(root);
 
   const cap = root.querySelector('.cap'), cnt = root.querySelector('.cnt'),
-        prog = root.querySelector('.prog i'), dip = root.querySelector('.dip');
+        prog = root.querySelector('.prog i'), dip = root.querySelector('.dip'),
+        fdots = [...root.querySelectorAll('.mapbox i.f')];
 
   const numd = BUILDINGS.filter(b => b.num);
   const spent = numd.reduce((s, b) => s + (b.cost || 0), 0);
@@ -305,6 +332,17 @@ export function installDeck() {
       [{ opacity: 0 }, { opacity: .62, offset: .42 }, { opacity: 0 }],
       { duration: 900, easing: 'ease-in-out' });
     flyShots(s);
+    /* locator dots: one per unique place this slide's camera looks at.
+       ortho map covers x ±890, z ±800 layout units — see .verify/minimap-shot.mjs */
+    const spots = [...new Map((s.shots || []).map(L =>
+      [L.cam[3] + ',' + L.cam[5], [L.cam[3], L.cam[5]]])).values()];
+    fdots.forEach((d, k) => {
+      const t = spots[k];
+      if (!t) { d.style.opacity = 0; return; }
+      d.style.opacity = 1;
+      d.style.left = ((t[0] + 890) / 1780 * 100).toFixed(2) + '%';
+      d.style.top = ((t[1] + 800) / 1600 * 100).toFixed(2) + '%';
+    });
     cap.classList.remove('in'); cap.classList.add('out');
     clearTimeout(capTimer);
     capTimer = setTimeout(() => {

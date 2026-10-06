@@ -94,6 +94,23 @@
     padding-top:12px; letter-spacing:.3px; display:flex; justify-content:space-between; }
   .sheetfoot b { color:var(--paperink); font-weight:600; }
 
+
+  /* corner locator: desaturated ortho map of the town — gold = university, white = this slide's stops */
+  .mapbox { position:absolute; right:4.5%; top:5%; width:min(230px,20vw); aspect-ratio:89/80;
+    border:1px solid var(--rule); background:#0a1418; box-shadow:0 10px 30px rgba(0,0,0,.5);
+    opacity:0; transform:scale(.97); transition:opacity .7s .35s, transform .7s .35s; }
+  .slide.cur .mapbox { opacity:1; transform:none; }
+  .mapbox img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+  .mapbox i { position:absolute; width:8px; height:8px; border-radius:50%;
+    transform:translate(-50%,-50%); background:#f6fbfd;
+    box-shadow:0 0 0 4px rgba(246,251,253,.22), 0 1px 6px rgba(0,0,0,.8); }
+  .mapbox i.u { background:#f3d27a; box-shadow:0 0 0 3px rgba(243,210,122,.3); }
+  .mapbox .ulab { position:absolute; font-style:normal; font-size:8px; letter-spacing:1.4px;
+    text-transform:uppercase; color:#f3d27a; text-shadow:0 1px 4px rgba(0,0,0,.9);
+    transform:translate(12px,-50%); white-space:nowrap; }
+  .mapbox .mtag { position:absolute; left:8px; top:6px; font-size:9px;
+    letter-spacing:1.8px; color:rgba(238,244,246,.85); text-shadow:0 1px 4px rgba(0,0,0,.9); }
+
   /* chrome: brand, counter, progress — hairlines only */
   .brand { position:fixed; left:48px; top:22px; z-index:9; font-size:10px; letter-spacing:2.6px;
     color:var(--dim); text-transform:uppercase; transition:color .4s; }
@@ -119,6 +136,7 @@
     .slide { width:100vw; height:100vh; page-break-after:always;
       break-after:page; }
     .cap { opacity:1 !important; transform:none !important; }
+    .mapbox { opacity:1 !important; transform:none !important; }
     .bg { inset:0; transform:none !important; }
     .brand, .cnt, .prog, .keys, .edge { display:none; }
   }
@@ -134,7 +152,9 @@
       <h1 class="cover">HAVENBROOK</h1>
       <div class="body">The town we designed around a med school — 26 buildings, all named, all budgeted.</div>
       <div class="body" style="margin-top:16px;font-size:11px;letter-spacing:2.4px;text-transform:uppercase;color:var(--dim)">Dinesh Yara &middot; Abhinav Mishra &middot; Davi Ogland &nbsp;·&nbsp; HST &middot; Period 4</div></div>
+      <div class="mapbox"><img src="shots/minimap.jpg" alt=""><span class="mtag">N &uarr;</span><i class="u" style="left:52.25%;top:33.13%"></i><em class="ulab" style="left:52.25%;top:33.13%">University</em><i style="left:46.63%;top:45.62%"></i> <i style="left:47.75%;top:47.50%"></i></div>
   </section>
+
 
   <!-- 02 — NEW: town overview (rubric: describe your town) -->
   <section class="slide">
@@ -153,7 +173,9 @@
         <div class="st"><b>11</b><span>community sites</span></div>
         <div class="st"><b>18</b><span>named streets</span></div>
       </div></div>
+      <div class="mapbox"><img src="shots/minimap.jpg" alt=""><span class="mtag">N &uarr;</span><i class="u" style="left:52.25%;top:33.13%"></i><em class="ulab" style="left:52.25%;top:33.13%">University</em><i style="left:48.88%;top:46.25%"></i> <i style="left:48.88%;top:48.12%"></i></div>
   </section>
+
 
   <!-- 03 — their WHO LIVES HERE: big-number layout -->
   <section class="slide">
@@ -166,7 +188,9 @@
         <div class="n"><b>20%</b><span>Adults 65+ — senior living and hospice sit in the quiet east</span></div>
       </div>
       <div class="body" style="margin-top:18px">That mix is why the map looks the way it does.</div></div>
+      <div class="mapbox"><img src="shots/minimap.jpg" alt=""><span class="mtag">N &uarr;</span><i class="u" style="left:52.25%;top:33.13%"></i><em class="ulab" style="left:52.25%;top:33.13%">University</em><i style="left:19.66%;top:33.75%"></i> <i style="left:20.79%;top:65.00%"></i> <i style="left:82.02%;top:17.50%"></i></div>
   </section>
+
 
   <!-- 04 — their UNIVERSITY SCHOOL OF MEDICINE (full name) -->
   <section class="slide">
@@ -179,7 +203,9 @@
         <li>Student flats wrap the west and south edges</li>
         <li>It&rsquo;s why the town exists, so it gets the best spot</li>
       </ul></div>
+      <div class="mapbox"><img src="shots/minimap.jpg" alt=""><span class="mtag">N &uarr;</span><i class="u" style="left:52.25%;top:33.13%"></i><em class="ulab" style="left:52.25%;top:33.13%">University</em><i style="left:52.25%;top:33.75%"></i> <i style="left:52.25%;top:36.56%"></i></div>
   </section>
+
 
   <!-- 05 — their THIRTEEN WAYS TO GET CARE -->
   <section class="slide">
@@ -193,7 +219,9 @@
         <li><b>Public health:</b> Havenbrook County Health Department &middot; <b>At home:</b> Innisfree Home Health</li>
         <li><b>Why these:</b> every site maps to a resident — students, families, and the 65+ block</li>
       </ul></div>
+      <div class="mapbox"><img src="shots/minimap.jpg" alt=""><span class="mtag">N &uarr;</span><i class="u" style="left:52.25%;top:33.13%"></i><em class="ulab" style="left:52.25%;top:33.13%">University</em><i style="left:54.49%;top:18.44%"></i> <i style="left:45.51%;top:29.88%"></i> <i style="left:63.20%;top:14.06%"></i></div>
   </section>
+
 
   <!-- 06 — their THE PRESERVE -->
   <section class="slide">
@@ -206,7 +234,9 @@
         <li>Scholar&rsquo;s Court and Scholar&rsquo;s Walk apartments plus University Lofts take the students; Midtown Flats takes downtown</li>
         <li>Nobody is more than a short walk from campus or a bus route</li>
       </ul></div>
+      <div class="mapbox"><img src="shots/minimap.jpg" alt=""><span class="mtag">N &uarr;</span><i class="u" style="left:52.25%;top:33.13%"></i><em class="ulab" style="left:52.25%;top:33.13%">University</em><i style="left:23.03%;top:61.25%"></i> <i style="left:20.22%;top:64.38%"></i></div>
   </section>
+
 
   <!-- 07 — their COMMUNITY -->
   <section class="slide">
@@ -219,7 +249,9 @@
         <li><b>Outside:</b> Willow Creek Park — pond, trails, bandshell</li>
         <li><b>The boring-but-needed:</b> Havenbrook Post Office, Havenbrook Unified School District, Quarry Hill Museum</li>
       </ul></div>
+      <div class="mapbox"><img src="shots/minimap.jpg" alt=""><span class="mtag">N &uarr;</span><i class="u" style="left:52.25%;top:33.13%"></i><em class="ulab" style="left:52.25%;top:33.13%">University</em><i style="left:80.34%;top:81.25%"></i> <i style="left:53.37%;top:79.25%"></i> <i style="left:53.37%;top:45.88%"></i></div>
   </section>
+
 
   <!-- 08 — their A PLACE TO GROW OLD -->
   <section class="slide">
@@ -232,7 +264,9 @@
         <li>Innisfree Home Health means seniors keep their own homes longer</li>
         <li>The whole block sits on Sunset Ridge — farthest from traffic, closest to quiet</li>
       </ul></div>
+      <div class="mapbox"><img src="shots/minimap.jpg" alt=""><span class="mtag">N &uarr;</span><i class="u" style="left:52.25%;top:33.13%"></i><em class="ulab" style="left:52.25%;top:33.13%">University</em><i style="left:78.09%;top:15.00%"></i> <i style="left:90.00%;top:23.88%"></i></div>
   </section>
+
 
   <!-- 09 — their SHOPPING AND ENTERTAINMENT -->
   <section class="slide">
@@ -245,7 +279,9 @@
         <li><b>Quarry Hill Museum</b> on the civic plaza — the rainy-day option</li>
         <li><b>Willow Creek Park</b> and <b>The Whippoorwill Coffeehouse</b> for the slower afternoons</li>
       </ul></div>
+      <div class="mapbox"><img src="shots/minimap.jpg" alt=""><span class="mtag">N &uarr;</span><i class="u" style="left:52.25%;top:33.13%"></i><em class="ulab" style="left:52.25%;top:33.13%">University</em><i style="left:80.34%;top:81.25%"></i> <i style="left:51.69%;top:80.00%"></i> <i style="left:61.24%;top:31.50%"></i></div>
   </section>
+
 
   <!-- 10 — their HOW WE LAID IT OUT -->
   <section class="slide">
@@ -258,7 +294,9 @@
         <li>Shops run along Commerce Blvd; the K-12 sits inside the neighborhoods</li>
         <li>Every address is within two blocks of a through-street — that&rsquo;s the EMS rule</li>
       </ul></div>
+      <div class="mapbox"><img src="shots/minimap.jpg" alt=""><span class="mtag">N &uarr;</span><i class="u" style="left:52.25%;top:33.13%"></i><em class="ulab" style="left:52.25%;top:33.13%">University</em><i style="left:48.88%;top:46.25%"></i> <i style="left:44.38%;top:27.50%"></i></div>
   </section>
+
 
   <!-- 11 — their HAVEN DOWNTOWN -->
   <section class="slide">
@@ -270,7 +308,9 @@
         <li>Students can go class &rarr; clinic &rarr; coffee without ever needing a car</li>
         <li>The plaza and the old-town skyline — Pinnacle Health Plaza, Foundry One — give it a real centre</li>
       </ul></div>
+      <div class="mapbox"><img src="shots/minimap.jpg" alt=""><span class="mtag">N &uarr;</span><i class="u" style="left:52.25%;top:33.13%"></i><em class="ulab" style="left:52.25%;top:33.13%">University</em><i style="left:23.03%;top:17.50%"></i> <i style="left:22.47%;top:18.75%"></i></div>
   </section>
+
 
   <!-- 12 — their SCHOOL DISTRICT -->
   <section class="slide">
@@ -282,7 +322,9 @@
         <li>Health-science electives and athletics feed straight into the university pipeline</li>
         <li>Sits inside the neighborhoods it serves — kids walk, not bus</li>
       </ul></div>
+      <div class="mapbox"><img src="shots/minimap.jpg" alt=""><span class="mtag">N &uarr;</span><i class="u" style="left:52.25%;top:33.13%"></i><em class="ulab" style="left:52.25%;top:33.13%">University</em><i style="left:21.35%;top:85.00%"></i></div>
   </section>
+
 
   <!-- 13 — NEW: trade-offs (rubric: explain decisions) -->
   <section class="slide">
@@ -295,7 +337,9 @@
         <li>Senior care went to the quiet east instead of paying downtown frontage</li>
         <li>Stopped at 26 buildings and banked the leftover <b>$50,000</b> instead of forcing a 27th</li>
       </ul></div>
+      <div class="mapbox"><img src="shots/minimap.jpg" alt=""><span class="mtag">N &uarr;</span><i class="u" style="left:52.25%;top:33.13%"></i><em class="ulab" style="left:52.25%;top:33.13%">University</em><i style="left:51.12%;top:22.50%"></i> <i style="left:48.88%;top:68.75%"></i></div>
   </section>
+
 
   <!-- 14 — NEW: real budget sheet (replaces the app screenshot) -->
   <section class="slide paper">
@@ -339,7 +383,9 @@
       <span>Spent <b>$9.95M</b> of <b>$10.00M</b> &middot; <b>$50,000</b> left unspent</span>
       <span>26 numbered buildings &middot; every one named</span>
     </div>
+      <div class="mapbox"><img src="shots/minimap.jpg" alt=""><span class="mtag">N &uarr;</span><i class="u" style="left:52.25%;top:33.13%"></i><em class="ulab" style="left:52.25%;top:33.13%">University</em><i style="left:50.00%;top:48.75%"></i></div>
   </section>
+
 
   <!-- 15 — NEW: conclusion -->
   <section class="slide">
@@ -352,7 +398,9 @@
         <li>Seniors get the full care loop — Innisfree Home Health visits all the way to Stillpoint Hospice</li>
         <li>And the whole town lands at <b>$9.95M</b>, under the $10M cap</li>
       </ul></div>
+      <div class="mapbox"><img src="shots/minimap.jpg" alt=""><span class="mtag">N &uarr;</span><i class="u" style="left:52.25%;top:33.13%"></i><em class="ulab" style="left:52.25%;top:33.13%">University</em><i style="left:46.63%;top:46.25%"></i></div>
   </section>
+
 
   <!-- 16 — NEW: references -->
   <section class="slide paper">
@@ -368,7 +416,9 @@
       <b>Dinesh Yara</b><br><b>Abhinav Mishra</b><br><b>Davi Ogland</b>
       <div style="margin-top:14px;font-size:11px;letter-spacing:1.6px;text-transform:uppercase">Havenbrook &middot; HST project</div>
     </div>
+      <div class="mapbox"><img src="shots/minimap.jpg" alt=""><span class="mtag">N &uarr;</span><i class="u" style="left:52.25%;top:33.13%"></i><em class="ulab" style="left:52.25%;top:33.13%">University</em><i style="left:46.63%;top:45.62%"></i></div>
   </section>
+
 
 </div>
 
