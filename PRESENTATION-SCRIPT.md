@@ -82,4 +82,4 @@
 
 - **Presenting live:** run the app → press **PRESENT** → it starts paused; **→** advances, **space** toggles autoplay, **Esc** exits back into the town (good for the "want to walk around?" offer at the end). Each slide flies the camera to the buildings itself — pause a beat and let it land before you talk.
 - **Backup:** `Havenbrook-Presentation.pdf` is the same 16 slides in the same order as a flat PDF. If the app won't run, present that — this script still lines up.
-- **Fill in before class:** your class/period goes in the "Period ___" slot on the title slide.
+- **Class/period:** filled in — the title slide reads "HST · Period 4".

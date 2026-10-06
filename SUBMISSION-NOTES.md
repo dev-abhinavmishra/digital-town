@@ -56,4 +56,4 @@
 
 - The deck exists twice: **PRESENT mode** inside the live app (the real camera flies to each building as you talk about it — arrows step, space toggles autoplay, Esc drops back into the town) and `town/deck/index.html`, which is what `Havenbrook-Presentation.pdf` was exported from — same 16 slides in the same order, printable.
 - The checklist asks for a Google Slides / Canva submission — to satisfy the letter of the rule, import `Havenbrook-Presentation.pdf` into Google Slides (File → Import slides → Upload) so the deck itself lives there.
-- The title slide has a **Period ___** placeholder — fill in your class/period before presenting (it wasn't provided).
+- The title slide shows **HST · Period 4** next to the group names.
