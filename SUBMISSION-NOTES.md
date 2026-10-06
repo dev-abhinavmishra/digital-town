@@ -19,7 +19,7 @@
 | Group member names | Done | Title slide, static deck, PROJECT BRIEF panel |
 | Title slide | Done | Slide 01 — HAVENBROOK + team |
 | ≥10 content slides | Done | 11 content slides + title + references (13 total) |
-| Medical school / university | Done | University School of Medicine, centered in the town (slide 04) |
+| Medical school / university | Done | Havenbrook University School of Medicine, centered in the town (slide 04) |
 | Housing development | Done | The Preserve at Havenbrook (slide 06) |
 | ≥7 healthcare facilities | Done | 13 sites on Wellness Way (slide 05) |
 | ≥3 community facilities | Done | 11 sites (slides 07–08) |
@@ -34,9 +34,9 @@
 ## Presentation flow (PRESENT mode)
 
 1. Title — town name + team
-2. The brief — what the assignment required
+2. Town overview — how the town is zoned and the rules it had to hit
 3. Demographics — 50% students / 30% families / 20% seniors
-4. University School of Medicine — the anchor
+4. Havenbrook University School of Medicine — the anchor
 5. Wellness Way — 13 healthcare facilities, who each serves
 6. The Preserve — donated housing development
 7. Willow Creek Park — community third places
@@ -50,5 +50,5 @@
 ## Notes
 
 - The deck exists twice: **PRESENT mode** inside the live app (video background, zero render cost) and `town/deck/index.html`, which is what `Havenbrook-Presentation.pdf` was exported from — identical content, printable.
-- The checklist asks for a Google Slides / Canva submission — the PDF covers the "slides" deliverable; the live app + mp4 go beyond it.
+- The checklist asks for a Google Slides / Canva submission — the PDF covers the "slides" deliverable; the live app + mp4 go beyond it. To satisfy the letter of the rule, import `Havenbrook-Presentation.pdf` into Google Slides (File → Import slides → Upload) so the deck itself lives there.
 - If the class form has a **period / class name** field, fill that in manually — it wasn't provided.

@@ -36,7 +36,6 @@ const css = `
 #uiDeck h1 { margin:0 0 14px; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
   font-size:46px; line-height:1.06; font-weight:500; letter-spacing:.2px; text-wrap:balance; }
 #uiDeck h1.big { font-size:74px; letter-spacing:.5px; }
-#uiDeck h1 em { font-style:italic; font-weight:400; }
 #uiDeck .body { font-size:14.5px; line-height:1.65; color:var(--sub); max-width:470px; }
 #uiDeck .pts { list-style:none; margin-top:2px; max-width:600px; }
 #uiDeck .pts li { font-size:13.5px; line-height:1.5; color:var(--sub);
@@ -110,7 +109,7 @@ export function installDeck() {
     <div class="brand">${TOWN.name} — a community planned around care</div>
     <div class="x">ESC to exit</div>
     <div class="cap"></div>
-    <div class="meta"><div class="cnt"></div><div class="keys">&#8592; &#8594; navigate &middot; space pause</div></div>
+    <div class="meta"><div class="cnt"></div><div class="keys">&#8592; &#8594; navigate &middot; space autoplay</div></div>
     <div class="prog"><i></i></div>
     <div class="edge l"></div><div class="edge r"></div>`;
   document.body.appendChild(root);
@@ -133,16 +132,16 @@ export function installDeck() {
   const W = () => window.__ws || 1;
   const SLIDES = [
     { cam: [620, 520, 690, -60, 0, -70], dur: 12, cover: true,
-      kick: 'Our Town · HST digital town project', title: '<em>HAVENBROOK</em>',
+      kick: 'Our Town Healthcare System project', title: 'HAVENBROOK',
       body: 'The town we designed around a med school — 26 buildings, all named, all budgeted.',
       team: 'Abhinav Mishra · Dinesh Yara · Davi Ogland' },
     { cam: [60, 780, 560, -20, 0, -60], dur: 11,
-      kick: 'The brief', title: 'What we had to build', pts: [
-        'A town growing around a new medical university — donated, off-budget',
-        'A housing development — also donated',
-        'At least 7 healthcare facilities and 3 community locations',
-        'A real name on every building, all inside <b>$10,000,000</b>'],
-      stats: [money(spent), 'spent of $10M', `${nH}`, 'healthcare sites', `${nC}`, 'community sites'] },
+      kick: 'Town overview', title: 'A town zoned around its med school', pts: [
+        'The donated campus sits dead centre — every district zones outward from it',
+        'Care runs along Wellness Way up north; errands run along Commerce Blvd down south',
+        'Housing and the K-12 hold the west; senior care gets the quiet northeast corner',
+        'The rules we had to hit: 7+ healthcare sites, 3+ community spots, a name on every building, all inside <b>$10,000,000</b>'],
+      stats: [money(spent), 'spent of $10M', `${nH}`, 'healthcare sites', `${nC}`, 'community sites', '18', 'named streets'] },
     { cam: [-270, 150, 430, -500, 8, 190], dur: 10,
       kick: 'Population & demographics', title: 'Who lives here', pts: [
         'Half are <b>college students</b> — flats and a student clinic hug the campus',
@@ -151,34 +150,35 @@ export function installDeck() {
         'That mix is why the map looks the way it does'],
       stats: ['50%', 'college students', '30%', 'families', '20%', 'adults 65+'] },
     { cam: [230, 110, -40, 40, 16, -250], dur: 10,
-      kick: 'The anchor · donated, off-budget', title: 'University School of Medicine', pts: [
-        'Med school, the Marchand library, and Whitmore + Caldecott halls around one quad',
-        'Sits at the town\u2019s center — every district zones outward from it',
+      kick: 'The anchor · donated, off-budget', title: 'Havenbrook University School of Medicine', pts: [
+        'The Marchand Medical Library, Whitmore Anatomy Hall, and Caldecott Clinical Sciences Hall around one quad',
+        'Sits at the town\u2019s centre — every district zones outward from it',
         'Student flats wrap the west and south edges',
         'It\u2019s why the town exists, so it gets the best spot'] },
     { cam: [300, 110, -620, 20, 26, -440], dur: 10,
       kick: '#3–15 · Wellness Way', title: 'Thirteen ways to get care', pts: [
-        '<b>Emergency:</b> Havenbrook General + Garrison EMS, a block apart on the Wellness spine',
-        '<b>Everyday:</b> Thacher clinic, Brookfield physicians, Marigold dental, Parallax optical, Meridian labs',
-        '<b>Long-term:</b> Stoneleigh rehab, Ashwood behavioral health, Halcyon House, Stillpoint hospice',
-        '<b>Public health:</b> the county Health Department · <b>At home:</b> Innisfree visits'] },
+        '<b>Emergency:</b> Havenbrook General Hospital and Garrison Medical Transport, a block apart on the Wellness spine',
+        '<b>Everyday:</b> Thacher Student Health Clinic, Brookfield Family Physicians, Marigold Dental Studio, Parallax Optical, Meridian Diagnostics Laboratory',
+        '<b>Long-term:</b> Stoneleigh Rehabilitation Center, Ashwood Behavioral Health Center, Halcyon House Senior Living, Stillpoint Hospice',
+        '<b>Public health:</b> Havenbrook County Health Department · <b>At home:</b> Innisfree Home Health',
+        '<b>Why these:</b> every site maps to a resident — students, families, and the 65+ block'] },
     { cam: [-270, 150, 430, -500, 8, 190], dur: 10,
-      kick: '#2 · Residential West · donated, off-budget', title: 'The Preserve', pts: [
+      kick: '#2 · Residential West · donated, off-budget', title: 'The Preserve at Havenbrook', pts: [
         'The required housing development — cottages, duplexes, townhouses',
-        'Preserve Commons apartments fill the middle of the neighborhood',
-        'Scholar\u2019s Walk + University Lofts take students; Midtown Flats takes downtown',
+        'Preserve Commons Apartments fill the middle of the neighborhood',
+        'Scholar\u2019s Court and Scholar\u2019s Walk apartments plus University Lofts take the students; Midtown Flats takes downtown',
         'Nobody is more than a short walk from campus or a bus route'] },
     { cam: [330, 130, 330, 575, 6, 130], dur: 10,
       kick: 'Community · 11 locations', title: 'The parts that aren\u2019t medicine', pts: [
-        '<b>Errands:</b> Havenbrook Commons mall, Bardsley\u2019s, Olsen\u2019s Market, Bellwether Pharmacy',
-        '<b>Food:</b> The Orchard Table, Mariposa Cantina, The Whippoorwill coffeehouse',
+        '<b>Errands:</b> Havenbrook Commons Mall, Bardsley\u2019s Department Store, Olsen\u2019s Market, Bellwether Pharmacy',
+        '<b>Food:</b> The Orchard Table, Mariposa Cantina, The Whippoorwill Coffeehouse',
         '<b>Outside:</b> Willow Creek Park — pond, trails, bandshell',
-        '<b>The boring-but-needed:</b> post office, school district, Quarry Hill Museum'] },
+        '<b>The boring-but-needed:</b> Havenbrook Post Office, Havenbrook Unified School District, Quarry Hill Museum'] },
     { cam: [640, 100, -330, 520, 12, -550], dur: 10,
       kick: '#14–15 · the quiet east', title: 'A place to grow old', pts: [
-        'Halcyon House — assisted living + memory care around a courtyard garden',
+        'Halcyon House Senior Living — assisted living + memory care around a courtyard garden',
         'Stillpoint Hospice next door, so the hardest visits stay short and private',
-        'Innisfree home health means seniors keep their own homes longer',
+        'Innisfree Home Health means seniors keep their own homes longer',
         'The whole block sits on Sunset Ridge — farthest from traffic, closest to quiet'] },
     { cam: [60, 780, 560, -20, 0, -60], dur: 11,
       kick: 'Layout & placement', title: 'How we laid it out', pts: [
@@ -192,13 +192,13 @@ export function installDeck() {
         'Picked the mall over a second park — the Preserve already covers green space',
         'Senior care went to the quiet east instead of paying downtown frontage',
         'Stopped at 26 buildings and banked the leftover <b>$50,000</b> instead of forcing a 27th'] },
-    { cam: [60, 780, 560, -20, 0, -60], dur: 12, dark: true,
+    { cam: [60, 780, 560, -20, 0, -60], dur: 12, dark: true, hold: 24000,
       kick: 'The budget', title: 'Where the money went', sheet: true },
     { cam: [620, 540, 720, -60, 0, -60], dur: 12, cover: true,
       kick: 'Conclusion', title: 'Why it works', pts: [
-        'Students get campus, housing, the clinic, and coffee — no car needed',
-        'Families get the school, pediatricians, groceries, and the park',
-        'Seniors get the full care loop — home visits to hospice — on one quiet side of town',
+        'Students get the campus, the flats, the Thacher Student Health Clinic, and the Whippoorwill — no car needed',
+        'Families get the school, Brookfield Family Physicians, Olsen\u2019s Market, and Willow Creek Park',
+        'Seniors get the full care loop — Innisfree Home Health visits all the way to Stillpoint Hospice',
         `And the whole town lands at <b>${money(spent)}</b>, under the $10M cap`] },
     { cam: [620, 520, 690, -60, 0, -70], dur: 10, dark: true,
       kick: 'References', title: 'Where our numbers came from', pts: [
@@ -209,16 +209,18 @@ export function installDeck() {
       team: 'Abhinav Mishra · Dinesh Yara · Davi Ogland' },
   ];
 
-  const HOLD_MS = 9500;
+  const HOLD_MS = 12000;
+  /* price-sheet kinds the rubric makes us spell out (restaurant type, fast-food type) */
+  const KIND = { orchard: 'farm-to-table restaurant', fiesta: 'Mexican fast-food grill' };
   let on = false, i = -1, timer = 0, capTimer = 0, paused = false, vidOK = false;
 
   function caption(s, idx) {
     const bits = [];
     if (s.stats) {
-      bits.push(`<div class="stats">${stat(s.stats[0], s.stats[1])}${stat(s.stats[2], s.stats[3])}${stat(s.stats[4], s.stats[5])}</div>`);
+      bits.push(`<div class="stats">${Array.from({ length: s.stats.length / 2 }, (_, k) => stat(s.stats[k * 2], s.stats[k * 2 + 1])).join('')}</div>`);
     } else if (s.sheet) {
       const mk = cat => numd.filter(b => b.cat === cat)
-        .map(b => `<div class="row"><i>${String(b.num).padStart(2, '0')}</i><em>${b.name}</em><b>${fmt(b.cost)}</b></div>`).join('');
+        .map(b => `<div class="row"><i>${String(b.num).padStart(2, '0')}</i><em>${b.name}${KIND[b.id] ? ' · ' + KIND[b.id] : ''}</em><b>${fmt(b.cost)}</b></div>`).join('');
       bits.push(`<div class="sheet">` +
         `<div class="col"><div class="colh">Healthcare <span>${money(byCat.health || 0)}</span></div>${mk('health')}</div>` +
         `<div class="col"><div class="colh">Community <span>${money(byCat.community || 0)}</span></div>${mk('community')}</div></div>` +
@@ -252,14 +254,14 @@ export function installDeck() {
     cnt.innerHTML = `${String(i + 1).padStart(2, '0')}<i>/</i>${String(SLIDES.length).padStart(2, '0')}`;
     prog.style.width = `${(i + 1) / SLIDES.length * 100}%`;
     clearTimeout(timer);
-    if (!paused) timer = setTimeout(() => i >= SLIDES.length - 1 ? exit() : show(i + 1), HOLD_MS);
+    if (!paused) timer = setTimeout(() => i >= SLIDES.length - 1 ? exit() : show(i + 1), s.hold || HOLD_MS);
   }
 
   const HUD_CHROME = ['hudUI', 'hint', 'compass', 'labels', 'legend', 'titlecard', 'hud'];
   const hudStash = {};
   async function start() {
     if (on || window.__mapOn) return;   // ortho map view can't fly the slide shots
-    on = true; paused = false;
+    on = true; paused = true;   // presenters drive with ←/→; space resumes autoplay
     window.__endTour && window.__endTour();
     const wasIn = window.__interior?.on;
     if (wasIn) window.__exitInterior?.();   // interior HUD sits above the deck layer
@@ -311,7 +313,7 @@ export function installDeck() {
     else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') step(-1);
     else if (e.key === ' ') { e.preventDefault();
       paused = !paused; clearTimeout(timer);
-      if (!paused) timer = setTimeout(() => i >= SLIDES.length - 1 ? exit() : show(i + 1), HOLD_MS); }
+      if (!paused) timer = setTimeout(() => i >= SLIDES.length - 1 ? exit() : show(i + 1), SLIDES[i].hold || HOLD_MS); }
   });
 
   window.__deck = { start, exit, next: () => step(1), prev: () => step(-1),
