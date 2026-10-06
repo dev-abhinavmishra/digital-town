@@ -313,7 +313,7 @@ export function installDeck() {
     else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') step(-1);
     else if (e.key === ' ') { e.preventDefault();
       paused = !paused; clearTimeout(timer);
-      if (!paused) timer = setTimeout(() => i >= SLIDES.length - 1 ? exit() : show(i + 1), SLIDES[i].hold || HOLD_MS); }
+      if (!paused && i >= 0) timer = setTimeout(() => i >= SLIDES.length - 1 ? exit() : show(i + 1), SLIDES[i].hold || HOLD_MS); }
   });
 
   window.__deck = { start, exit, next: () => step(1), prev: () => step(-1),
