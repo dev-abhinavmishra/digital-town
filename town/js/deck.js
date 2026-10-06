@@ -1,5 +1,5 @@
 // deck.js — PRESENT mode: a cinematic slideshow played inside the live scene.
-// Each slide is a slow camera flight with an editorial caption block; the town
+// Every slide flies the camera onto the building(s) it's about — the town
 // itself is the imagery. Keyboard: ←/→ step, space pause, Esc exit.
 // DOM-only except window.__flyTo / __endTour / __enterInterior.
 import { BUILDINGS, TOWN } from './layout.js';
@@ -88,11 +88,7 @@ const css = `
 #uiDeck.on .x { opacity:1; }
 #uiDeck .edge { position:absolute; top:0; bottom:0; width:22%; pointer-events:auto; }
 #uiDeck .edge.l { left:0 } #uiDeck .edge.r { right:0 }
-/* video background: a pre-rendered orbit of the town replaces live camera
-   flights so PRESENT mode costs a video decode instead of the whole scene */
-#uiDeck .bgvid { position:absolute; inset:0; width:100%; height:100%;
-  object-fit:cover; background:#050b0f; }
-/* film-cut transition: the video dips through black on every slide change */
+/* film-cut transition: the scene dips through black on every slide change */
 #uiDeck .dip { position:absolute; inset:0; background:#050b0f; opacity:0;
   pointer-events:none; }
 `;
@@ -105,7 +101,7 @@ export function installDeck() {
   const root = document.createElement('div');
   root.id = 'uiDeck';
   root.innerHTML = `<div class="bar t"></div><div class="bar b"></div>
-    <video class="bgvid" src="deck/town-orbit.mp4" muted loop playsinline preload="auto"></video><div class="scrim"></div><div class="dip"></div>
+    <div class="scrim"></div><div class="dip"></div>
     <div class="brand">${TOWN.name} — a community planned around care</div>
     <div class="x">ESC to exit</div>
     <div class="cap"></div>
@@ -125,82 +121,132 @@ export function installDeck() {
   const nC = numd.filter(b => b.cat === 'community').length;
 
   const stat = (v, l) => `<div class="st"><b>${v}</b><span>${l}</span></div>`;
-  const find = id => BUILDINGS.find(b => b.id === id);
 
-  /* cam: [px,py,pz → tx,ty,tz], dur = seconds of flight (the glide IS the shot).
+  /* shots: [{cam:[px,py,pz,tx,ty,tz], dur}] — each leg is one live camera
+     flight onto the building(s) the slide talks about, chained in order.
      Coords are authored in layout space — scale to world space via __ws. */
   const W = () => window.__ws || 1;
   const SLIDES = [
-    { cam: [620, 520, 690, -60, 0, -70], dur: 12, cover: true,
+    /* 01 — HAVENBROOK (their cover): a slow two-leg sweep over the whole town */
+    { shots: [{ cam: [620, 520, 690, -60, 0, -70], dur: 9 },
+              { cam: [430, 420, 770, -40, 0, -40], dur: 9 }], cover: true, hold: 22000,
       kick: 'Our Town Healthcare System project', title: 'HAVENBROOK',
       body: 'The town we designed around a med school — 26 buildings, all named, all budgeted.',
       team: 'Abhinav Mishra · Dinesh Yara · Davi Ogland' },
-    { cam: [60, 780, 560, -20, 0, -60], dur: 11,
-      kick: 'Town overview', title: 'A town zoned around its med school', pts: [
+    /* 02 — THE TOWN (overview): high aerial that pans across all four districts */
+    { shots: [{ cam: [60, 780, 560, -20, 0, -60], dur: 11 },
+              { cam: [-380, 620, 640, -20, 0, -30], dur: 9 }], hold: 24000,
+      kick: 'The town', title: 'Zoned around its med school', pts: [
         'The donated campus sits dead centre — every district zones outward from it',
         'Care runs along Wellness Way up north; errands run along Commerce Blvd down south',
         'Housing and the K-12 hold the west; senior care gets the quiet northeast corner',
         'The rules we had to hit: 7+ healthcare sites, 3+ community spots, a name on every building, all inside <b>$10,000,000</b>'],
       stats: [money(spent), 'spent of $10M', `${nH}`, 'healthcare sites', `${nC}`, 'community sites', '18', 'named streets'] },
-    { cam: [-270, 150, 430, -500, 8, 190], dur: 10,
+    /* 03 — WHO LIVES HERE (theirs): flies students → families → seniors */
+    { shots: [{ cam: [-330, 130, -120, -540, 8, -260], dur: 6 },   // Scholar's Court + flats by campus
+              { cam: [-330, 140, 420, -520, 8, 240], dur: 6 },     // family grid + school
+              { cam: [660, 150, -240, 570, 10, -520], dur: 6 }], hold: 26000,   // senior block
       kick: 'Population & demographics', title: 'Who lives here', pts: [
         'Half are <b>college students</b> — flats and a student clinic hug the campus',
         'About a third are <b>families</b> — houses cluster around the K-12',
         'One in five is <b>65+</b> — senior living and hospice sit in the quiet east',
         'That mix is why the map looks the way it does'],
       stats: ['50%', 'college students', '30%', 'families', '20%', 'adults 65+'] },
-    { cam: [230, 110, -40, 40, 16, -250], dur: 10,
+    /* 04 — UNIVERSITY SCHOOL OF MEDICINE (theirs): dives onto the quad */
+    { shots: [{ cam: [280, 90, -40, 40, 22, -260], dur: 7 },
+              { cam: [-90, 75, -95, 40, 20, -215], dur: 7 }], hold: 20000,
       kick: 'The anchor · donated, off-budget', title: 'Havenbrook University School of Medicine', pts: [
         'The Marchand Medical Library, Whitmore Anatomy Hall, and Caldecott Clinical Sciences Hall around one quad',
         'Sits at the town\u2019s centre — every district zones outward from it',
         'Student flats wrap the west and south edges',
         'It\u2019s why the town exists, so it gets the best spot'] },
-    { cam: [300, 110, -620, 20, 26, -440], dur: 10,
+    /* 05 — THIRTEEN WAYS TO GET CARE (theirs): hospital → EMS/clinic → lab+rehab */
+    { shots: [{ cam: [300, 95, -420, 80, 28, -505], dur: 6 },      // Havenbrook General
+              { cam: [80, 55, -240, -80, 8, -322], dur: 6 },       // EMS + Thacher across Wellness
+              { cam: [330, 80, -360, 235, 10, -575], dur: 6 }], hold: 26000,   // lab + Stoneleigh
       kick: '#3–15 · Wellness Way', title: 'Thirteen ways to get care', pts: [
         '<b>Emergency:</b> Havenbrook General Hospital and Garrison Medical Transport, a block apart on the Wellness spine',
         '<b>Everyday:</b> Thacher Student Health Clinic, Brookfield Family Physicians, Marigold Dental Studio, Parallax Optical, Meridian Diagnostics Laboratory',
         '<b>Long-term:</b> Stoneleigh Rehabilitation Center, Ashwood Behavioral Health Center, Halcyon House Senior Living, Stillpoint Hospice',
         '<b>Public health:</b> Havenbrook County Health Department · <b>At home:</b> Innisfree Home Health',
         '<b>Why these:</b> every site maps to a resident — students, families, and the 65+ block'] },
-    { cam: [-270, 150, 430, -500, 8, 190], dur: 10,
+    /* 06 — THE PRESERVE (theirs): across the commons to the housing rows */
+    { shots: [{ cam: [-250, 140, 390, -480, 8, 180], dur: 7 },
+              { cam: [-360, 105, 60, -530, 10, 230], dur: 7 }], hold: 20000,
       kick: '#2 · Residential West · donated, off-budget', title: 'The Preserve at Havenbrook', pts: [
         'The required housing development — cottages, duplexes, townhouses',
         'Preserve Commons Apartments fill the middle of the neighborhood',
         'Scholar\u2019s Court and Scholar\u2019s Walk apartments plus University Lofts take the students; Midtown Flats takes downtown',
         'Nobody is more than a short walk from campus or a bus route'] },
-    { cam: [330, 130, 330, 575, 6, 130], dur: 10,
+    /* 07 — COMMUNITY (theirs): mall → Bardsley's/Olsen's → Main St row */
+    { shots: [{ cam: [400, 120, 650, 540, 10, 500], dur: 6 },      // Commons Mall
+              { cam: [150, 80, 560, 60, 8, 468], dur: 6 },        // Bardsley's + Olsen's
+              { cam: [90, 45, 15, 60, 8, -66], dur: 6 }], hold: 26000,   // Main St storefronts
       kick: 'Community · 11 locations', title: 'The parts that aren\u2019t medicine', pts: [
         '<b>Errands:</b> Havenbrook Commons Mall, Bardsley\u2019s Department Store, Olsen\u2019s Market, Bellwether Pharmacy',
         '<b>Food:</b> The Orchard Table, Mariposa Cantina, The Whippoorwill Coffeehouse',
         '<b>Outside:</b> Willow Creek Park — pond, trails, bandshell',
         '<b>The boring-but-needed:</b> Havenbrook Post Office, Havenbrook Unified School District, Quarry Hill Museum'] },
-    { cam: [640, 100, -330, 520, 12, -550], dur: 10,
+    /* 08 — A PLACE TO GROW OLD (theirs): Halcyon House then Stillpoint */
+    { shots: [{ cam: [420, 95, -430, 500, 12, -560], dur: 6 },
+              { cam: [630, 75, -330, 712, 8, -418], dur: 6 }], hold: 20000,
       kick: '#14–15 · the quiet east', title: 'A place to grow old', pts: [
         'Halcyon House Senior Living — assisted living + memory care around a courtyard garden',
         'Stillpoint Hospice next door, so the hardest visits stay short and private',
         'Innisfree Home Health means seniors keep their own homes longer',
         'The whole block sits on Sunset Ridge — farthest from traffic, closest to quiet'] },
-    { cam: [60, 780, 560, -20, 0, -60], dur: 11,
+    /* 09 — SHOPPING AND ENTERTAINMENT (theirs): mall → Bardsley's → museum */
+    { shots: [{ cam: [480, 110, 630, 540, 10, 500], dur: 6 },
+              { cam: [140, 70, 555, 30, 8, 480], dur: 6 },
+              { cam: [250, 95, -120, 200, 10, -296], dur: 6 }], hold: 24000,
+      kick: 'Errands & entertainment', title: 'Shopping and entertainment', pts: [
+        '<b>Havenbrook Commons Mall</b> — the anchor of the Commerce Blvd corridor',
+        '<b>Bardsley\u2019s Department Store</b> and <b>Olsen\u2019s Market</b> for the essentials',
+        '<b>Quarry Hill Museum</b> on the civic plaza — the rainy-day option',
+        '<b>Willow Creek Park</b> and <b>The Whippoorwill Coffeehouse</b> for the slower afternoons'] },
+    /* 10 — HOW WE LAID IT OUT (theirs): the grid, then down the Wellness spine */
+    { shots: [{ cam: [60, 780, 560, -20, 0, -60], dur: 8 },
+              { cam: [150, 160, -240, -100, 10, -360], dur: 8 }], hold: 24000,
       kick: 'Layout & placement', title: 'How we laid it out', pts: [
         'Streets first: two arterials cross at the campus, 18 named streets fill the grid',
         'Hospital and EMS share the Wellness Way spine — minutes from anywhere',
         'Shops run along Commerce Blvd; the K-12 sits inside the neighborhoods',
         'Every address is within two blocks of a through-street — that\u2019s the EMS rule'] },
-    { cam: [300, 110, -620, 20, 26, -440], dur: 10,
+    /* 11 — HAVEN DOWNTOWN (theirs): the old-town skyline + plaza */
+    { shots: [{ cam: [-150, 150, -160, -480, 10, -520], dur: 9 },
+              { cam: [-330, 110, -300, -490, 15, -500], dur: 7 }], hold: 22000,
+      kick: 'The town center', title: 'Haven downtown', pts: [
+        'A walkable core where the campus, the hospital district, and the shops share a few busy blocks',
+        'Students can go class → clinic → coffee without ever needing a car',
+        'The plaza and the old-town skyline — Pinnacle Health Plaza, Foundry One — give it a real centre'] },
+    /* 12 — SCHOOL DISTRICT (theirs): orbits the K-12 campus */
+    { shots: [{ cam: [-720, 170, 330, -510, 10, 560], dur: 8 },
+              { cam: [-390, 120, 660, -510, 10, 560], dur: 8 }], hold: 22000,
+      kick: '#20 · Southwest neighborhoods', title: 'Havenbrook Unified School District', pts: [
+        'The K-12 anchor for the family neighborhoods on the southwest side',
+        'Health-science electives and athletics feed straight into the university pipeline',
+        'Sits inside the neighborhoods it serves — kids walk, not bus'] },
+    /* 13 — WHAT WE TRADED: medical district wide, then the south side */
+    { shots: [{ cam: [300, 110, -620, 20, 26, -440], dur: 9 },
+              { cam: [-140, 320, 620, -20, 0, 300], dur: 9 }], hold: 22000,
       kick: 'Decision-making', title: 'What we traded', pts: [
         'The two donated sites freed ~$4.5M — so we bought 13 small facilities instead of one mega-campus',
         'Picked the mall over a second park — the Preserve already covers green space',
         'Senior care went to the quiet east instead of paying downtown frontage',
         'Stopped at 26 buildings and banked the leftover <b>$50,000</b> instead of forcing a 27th'] },
-    { cam: [60, 780, 560, -20, 0, -60], dur: 12, dark: true, hold: 24000,
+    /* 14 — THE BUDGET: straight overhead while the ledger runs */
+    { shots: [{ cam: [60, 1250, 640, 0, 0, -20], dur: 10 }], dark: true, hold: 26000,
       kick: 'The budget', title: 'Where the money went', sheet: true },
-    { cam: [620, 540, 720, -60, 0, -60], dur: 12, cover: true,
+    /* 15 — WHY IT WORKS: back to a sweeping aerial */
+    { shots: [{ cam: [620, 540, 720, -60, 0, -60], dur: 9 },
+              { cam: [700, 480, 280, -60, 0, -60], dur: 8 }], cover: true, hold: 22000,
       kick: 'Conclusion', title: 'Why it works', pts: [
         'Students get the campus, the flats, the Thacher Student Health Clinic, and the Whippoorwill — no car needed',
         'Families get the school, Brookfield Family Physicians, Olsen\u2019s Market, and Willow Creek Park',
         'Seniors get the full care loop — Innisfree Home Health visits all the way to Stillpoint Hospice',
         `And the whole town lands at <b>${money(spent)}</b>, under the $10M cap`] },
-    { cam: [620, 520, 690, -60, 0, -70], dur: 10, dark: true,
+    /* 16 — REFERENCES */
+    { shots: [{ cam: [620, 520, 690, -60, 0, -70], dur: 9 }], dark: true, hold: 18000,
       kick: 'References', title: 'Where our numbers came from', pts: [
         'Our Town Healthcare System — project brief + budget sheet (class handout)',
         'U.S. Census QuickFacts — the 50 / 30 / 20 college-town mix',
@@ -212,7 +258,7 @@ export function installDeck() {
   const HOLD_MS = 12000;
   /* price-sheet kinds the rubric makes us spell out (restaurant type, fast-food type) */
   const KIND = { orchard: 'farm-to-table restaurant', fiesta: 'Mexican fast-food grill' };
-  let on = false, i = -1, timer = 0, capTimer = 0, paused = false, vidOK = false;
+  let on = false, i = -1, timer = 0, capTimer = 0, paused = false, seq = 0;
 
   function caption(s, idx) {
     const bits = [];
@@ -236,17 +282,29 @@ export function installDeck() {
       (s.team ? `<div class="team">${s.team}</div>` : '');
   }
 
+  /* chain this slide's camera legs; each leg = one zoom onto a named building */
+  function flyShots(s) {
+    const id = ++seq;
+    const w = W();
+    const legs = s.shots || [];
+    let leg = 0;
+    const go = () => {
+      if (id !== seq || !on || leg >= legs.length) return;
+      const L = legs[leg++];
+      window.__flyTo(...L.cam.map(v => v * w), L.dur);
+      setTimeout(go, L.dur * 1000 + 400);   // small settle between legs
+    };
+    go();
+  }
+
   function show(idx) {
     i = idx;
     const s = SLIDES[i];
-    // film-cut: background dips through black between slides (skipped on open)
+    // film-cut: the scene dips through black between slides (skipped on open)
     if (idx > 0 && dip.animate) dip.animate(
       [{ opacity: 0 }, { opacity: .62, offset: .42 }, { opacity: 0 }],
       { duration: 900, easing: 'ease-in-out' });
-    if (!vidOK) {   // fallback: live camera flight when the video can't play
-      const w = W();
-      window.__flyTo(...s.cam.map(v => v * w), Math.max(1.8, s.dur * .72));
-    }
+    flyShots(s);
     cap.classList.remove('in'); cap.classList.add('out');
     clearTimeout(capTimer);
     capTimer = setTimeout(() => {
@@ -271,35 +329,21 @@ export function installDeck() {
     document.getElementById('uiDrawer')?.classList.remove('open');
     HUD_CHROME.forEach(id => { const el = document.getElementById(id);
       if (el) { hudStash[id] = el.style.display; el.style.display = 'none'; } });
+    window.__setPaused && window.__setPaused(false);   // live scene must render the flights
     root.classList.add('on');
-    // video background: the orbit loop plays over a paused 3D renderer —
-    // PRESENT then costs a video decode, not the whole town per frame.
-    // If the file can't play (missing/unsupported) the live flights stay.
-    const vid = root.querySelector('.bgvid');
-    vid.muted = true;
-    // whenever play() actually resolves (now or later), flip to video mode —
-    // a 2.5s bound keeps a stalled fetch from freezing the opening slide
-    const played = vid.play().then(() => {
-      vidOK = true;
-      window.__setPaused && window.__setPaused(true);
-    }).catch(() => {});
-    await Promise.race([played, new Promise(r => setTimeout(r, 2500))]);
     // interior exit restores the saved outdoor pose at +190ms — let it land
     // before the opening flight, or the snap stomps the tween mid-flight
     wasIn ? setTimeout(() => on && show(0), 260) : show(0);
   }
   function exit() {
     if (!on) return;
-    on = false; i = -1; paused = false;
+    on = false; i = -1; paused = false; seq++;   // kill any queued camera legs
     clearTimeout(timer); clearTimeout(capTimer);
     cap.classList.remove('in', 'out'); cap.innerHTML = '';
     root.classList.remove('on');
     HUD_CHROME.forEach(id => { const el = document.getElementById(id);
       if (el) el.style.display = hudStash[id] ?? ''; });
     document.getElementById('uiBtnDeck')?.classList.remove('on');
-    root.querySelector('.bgvid')?.pause();
-    vidOK = false;
-    window.__setPaused && window.__setPaused(false);   // live scene resumes
     const w = W();
     window.__flyTo(540 * w, 620 * w, 660 * w, -30 * w, 0, -40 * w, 2.2);   // home aerial
   }

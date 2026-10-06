@@ -6,53 +6,66 @@
 <title>Havenbrook — A Community Planned Around Care</title>
 <style>
   :root {
-    --ink:#eef4f6; --sub:#a7bcc6; --dim:#7e97a2; --rule:rgba(238,244,246,.28);
+    --ink:#f4f7f8; --sub:#c4d3d9; --dim:#8fa5ae; --rule:rgba(244,247,248,.3);
     --paper:#f4f2ec; --paperink:#16323e; --papersub:#5d7380;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body { height:100%; overflow:hidden; background:#050b0f;
     font-family:"Segoe UI", system-ui, -apple-system, sans-serif; }
-  .serif { font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; }
+  .cond { font-family:"Liberation Sans Narrow","Arial Narrow","Oswald","Anton","Helvetica Neue",Arial,sans-serif; }
 
   #track { display:flex; height:100%; transition:transform .85s cubic-bezier(.7,0,.2,1); }
   .slide { position:relative; flex:0 0 100%; height:100%; overflow:hidden; }
 
-  /* full-bleed imagery with an editorial scrim — no cards on cards */
+  /* full-bleed town shots — the way the group's deck was built */
   .bg { position:absolute; inset:-4%; background-size:cover; background-position:center;
     transition:transform 9s cubic-bezier(.2,.6,.2,1); transform:scale(1); }
   .slide.cur .bg { transform:scale(1.045); }   /* slow push — alive, not static */
   .scrim { position:absolute; inset:0;
-    background:linear-gradient(14deg, rgba(5,16,22,.84) 0%, rgba(5,16,22,.42) 36%, rgba(5,16,22,0) 64%); }
+    background:linear-gradient(14deg, rgba(5,16,22,.86) 0%, rgba(5,16,22,.45) 40%, rgba(5,16,22,.12) 68%); }
 
-  .cap { position:absolute; left:7.5%; bottom:12%; max-width:600px; color:var(--ink);
-    opacity:0; transform:translateY(18px); transition:opacity .7s .25s, transform .7s .25s cubic-bezier(.2,.7,.3,1); }
+  .cap { position:absolute; left:6.5%; bottom:10%; max-width:660px; color:var(--ink);
+    opacity:0; transform:translateY(18px); transition:opacity .7s .25s, transform .7s .25s cubic-bezier(.2,.7,.3,1);
+    text-shadow:0 1px 10px rgba(0,0,0,.5); }
   .slide.cur .cap { opacity:1; transform:none; }
-  .kick { font-size:11px; letter-spacing:3.4px; font-weight:600; color:var(--sub);
-    text-transform:uppercase; margin-bottom:16px; display:flex; align-items:center; gap:12px; }
+  .kick { font-size:clamp(10px,1vw,12px); letter-spacing:3.4px; font-weight:600; color:var(--sub);
+    text-transform:uppercase; margin-bottom:14px; display:flex; align-items:center; gap:12px; }
   .kick::after { content:''; height:1px; width:44px; background:var(--rule); }
-  h1 { font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
-    font-size:clamp(34px,4.6vw,52px); line-height:1.06; font-weight:500; letter-spacing:.2px;
-    margin-bottom:16px; text-wrap:balance; }
-  h1.cover { font-size:clamp(52px,7.5vw,86px); letter-spacing:.5px; }
-  .body { font-size:clamp(13px,1.35vw,15px); line-height:1.66; color:var(--sub); max-width:480px; }
-  .pts { list-style:none; max-width:560px; }
-  .pts li { font-size:clamp(12px,1.15vw,13.5px); line-height:1.5; color:var(--sub);
-    padding-left:18px; position:relative; margin-bottom:7px; }
+  h1 { font-family:"Liberation Sans Narrow","Arial Narrow","Oswald","Anton","Helvetica Neue",Arial,sans-serif;
+    font-size:clamp(38px,5.2vw,64px); line-height:1.02; font-weight:700; letter-spacing:.02em;
+    text-transform:uppercase; margin-bottom:16px; text-wrap:balance; }
+  h1.cover { font-size:clamp(56px,9vw,104px); letter-spacing:.04em; }
+  .body { font-size:clamp(13px,1.35vw,15.5px); line-height:1.62; color:var(--sub); max-width:500px; }
+  .pts { list-style:none; max-width:620px; }
+  .pts li { font-size:clamp(12.5px,1.2vw,14px); line-height:1.55; color:var(--sub);
+    padding-left:18px; position:relative; margin-bottom:8px; }
   .pts li::before { content:'\2014'; position:absolute; left:0; color:var(--dim); }
   .pts li b { color:var(--ink); font-weight:600; }
 
+  /* the demographics slide: their big-number layout */
+  .bignums { display:flex; gap:clamp(24px,4vw,54px); margin-top:22px; }
+  .bignums .n b { display:block; font-family:"Liberation Sans Narrow","Arial Narrow",Arial,sans-serif;
+    font-size:clamp(44px,6vw,80px); font-weight:700; color:var(--ink); line-height:1; }
+  .bignums .n span { display:block; margin-top:6px; font-size:clamp(11px,1.05vw,13px);
+    line-height:1.4; color:var(--sub); max-width:170px; }
+
   .stats { display:flex; gap:34px; margin-top:24px; }
-  .st b { display:block; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
-    font-size:clamp(24px,2.6vw,32px); font-weight:500; color:var(--ink); }
+  .st b { display:block; font-family:"Liberation Sans Narrow","Arial Narrow",Arial,sans-serif;
+    font-size:clamp(26px,3vw,38px); font-weight:700; color:var(--ink); }
   .st span { font-size:10px; letter-spacing:1.8px; text-transform:uppercase; color:var(--dim); }
 
-  /* the ledger slide: paper instead of ink — one tonal shift, not a template */
+  /* the ledger + references slides: paper instead of ink — one tonal shift */
   .paper { background:var(--paper); }
-  .paper .cap { color:var(--paperink); left:7.5%; bottom:auto; top:50%; transform:translateY(-44%); max-width:560px; }
+  .paper .cap { color:var(--paperink); left:7.5%; bottom:auto; top:50%; transform:translateY(-44%); max-width:560px;
+    text-shadow:none; }
   .paper .slide.cur .cap, .paper.slide.cur .cap { transform:translateY(-50%); opacity:1; }
   .paper .cap { transition:opacity .7s .25s; }
   .paper .kick { color:var(--papersub); } .paper .kick::after { background:rgba(22,50,62,.3); }
+  .paper h1 { color:var(--paperink); }
   .paper .body { color:var(--papersub); }
+  .paper .pts li { color:var(--papersub); }
+  .paper .pts li b { color:var(--paperink); }
+  .paper .pts li::before { color:rgba(22,50,62,.42); }
   .bud { margin-top:26px; width:min(520px,60vw); }
   .bud .track { height:5px; display:flex; border-radius:3px; overflow:hidden; background:rgba(22,50,62,.12); }
   .bud .track i { height:100%; }
@@ -61,11 +74,8 @@
   .dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:9px; vertical-align:1px; }
   .paper .side { position:absolute; right:7.5%; top:50%; transform:translateY(-50%);
     text-align:right; color:var(--papersub); font-size:12.5px; line-height:2; letter-spacing:.3px; }
-  .paper .side b { font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
-    font-size:20px; color:var(--paperink); font-weight:500; display:block; }
-  .paper .pts li { color:var(--papersub); }
-  .paper .pts li b { color:var(--paperink); }
-  .paper .pts li::before { color:rgba(22,50,62,.42); }
+  .paper .side b { font-family:"Liberation Sans Narrow","Arial Narrow",Arial,sans-serif;
+    font-size:22px; color:var(--paperink); font-weight:700; display:block; letter-spacing:.03em; }
   /* budget sheet slide — itemized table, two columns */
   .sheet { position:absolute; left:7.5%; right:7.5%; top:22%; display:flex; gap:5%; }
   .sheet .col { flex:1; }
@@ -87,9 +97,9 @@
   /* chrome: brand, counter, progress — hairlines only */
   .brand { position:fixed; left:48px; top:22px; z-index:9; font-size:10px; letter-spacing:2.6px;
     color:var(--dim); text-transform:uppercase; transition:color .4s; }
-  .cnt { position:fixed; right:48px; top:22px; z-index:9; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
-    font-size:15px; letter-spacing:1.5px; color:var(--ink); transition:color .4s; }
-  .cnt i { font-style:normal; color:var(--dim); margin:0 5px; font-size:12px; }
+  .cnt { position:fixed; right:48px; top:22px; z-index:9; font-family:"Liberation Sans Narrow","Arial Narrow",Arial,sans-serif;
+    font-size:17px; letter-spacing:2px; color:var(--ink); transition:color .4s; }
+  .cnt i { font-style:normal; color:var(--dim); margin:0 5px; font-size:13px; }
   .prog { position:fixed; left:48px; right:48px; bottom:34px; height:1px; z-index:9;
     background:rgba(238,244,246,.16); }
   .prog i { display:block; height:100%; width:0; background:rgba(238,244,246,.75); transition:width .6s ease; }
@@ -117,18 +127,20 @@
 <body>
 <div id="track">
 
+  <!-- 01 — their cover -->
   <section class="slide">
     <div class="bg" style="background-image:url('shots/01-cover.jpg')"></div><div class="scrim"></div>
     <div class="cap"><div class="kick">Our Town Healthcare System project</div>
       <h1 class="cover">HAVENBROOK</h1>
       <div class="body">The town we designed around a med school — 26 buildings, all named, all budgeted.</div>
-      <div class="body" style="margin-top:16px;font-size:10.5px;letter-spacing:2.4px;text-transform:uppercase;color:var(--dim)">Abhinav Mishra &middot; Dinesh Yara &middot; Davi Ogland</div></div>
+      <div class="body" style="margin-top:16px;font-size:11px;letter-spacing:2.4px;text-transform:uppercase;color:var(--dim)">Dinesh Yara &middot; Abhinav Mishra &middot; Davi Ogland &nbsp;·&nbsp; HST &middot; Period ___</div></div>
   </section>
 
+  <!-- 02 — NEW: town overview (rubric: describe your town) -->
   <section class="slide">
     <div class="bg" style="background-image:url('shots/02-plan.jpg')"></div><div class="scrim"></div>
-    <div class="cap"><div class="kick">Town overview</div>
-      <h1>A town zoned around its med school</h1>
+    <div class="cap"><div class="kick">The town</div>
+      <h1>Zoned around its med school</h1>
       <ul class="pts">
         <li>The donated campus sits dead centre — every district zones outward from it</li>
         <li>Care runs along Wellness Way up north; errands run along Commerce Blvd down south</li>
@@ -143,23 +155,20 @@
       </div></div>
   </section>
 
+  <!-- 03 — their WHO LIVES HERE: big-number layout -->
   <section class="slide">
-    <div class="bg" style="background-image:url('shots/05-preserve.jpg')"></div><div class="scrim"></div>
+    <div class="bg" style="background-image:url('shots/03-people.jpg')"></div><div class="scrim"></div>
     <div class="cap"><div class="kick">Population &amp; demographics</div>
       <h1>Who lives here</h1>
-      <ul class="pts">
-        <li>Half are <b>college students</b> — flats and a student clinic hug the campus</li>
-        <li>About a third are <b>families</b> — houses cluster around the K-12</li>
-        <li>One in five is <b>65+</b> — senior living and hospice sit in the quiet east</li>
-        <li>That mix is why the map looks the way it does</li>
-      </ul>
-      <div class="stats">
-        <div class="st"><b>50%</b><span>college students</span></div>
-        <div class="st"><b>30%</b><span>families</span></div>
-        <div class="st"><b>20%</b><span>adults 65+</span></div>
-      </div></div>
+      <div class="bignums">
+        <div class="n"><b>50%</b><span>College students — flats and a student clinic hug the campus</span></div>
+        <div class="n"><b>30%</b><span>Families — houses cluster around the K-12</span></div>
+        <div class="n"><b>20%</b><span>Adults 65+ — senior living and hospice sit in the quiet east</span></div>
+      </div>
+      <div class="body" style="margin-top:18px">That mix is why the map looks the way it does.</div></div>
   </section>
 
+  <!-- 04 — their UNIVERSITY SCHOOL OF MEDICINE (full name) -->
   <section class="slide">
     <div class="bg" style="background-image:url('shots/03-campus.jpg')"></div><div class="scrim"></div>
     <div class="cap"><div class="kick">The anchor &middot; donated, off-budget</div>
@@ -172,6 +181,7 @@
       </ul></div>
   </section>
 
+  <!-- 05 — their THIRTEEN WAYS TO GET CARE -->
   <section class="slide">
     <div class="bg" style="background-image:url('shots/04-wellness.jpg')"></div><div class="scrim"></div>
     <div class="cap"><div class="kick">#3&ndash;15 &middot; Wellness Way</div>
@@ -185,6 +195,7 @@
       </ul></div>
   </section>
 
+  <!-- 06 — their THE PRESERVE -->
   <section class="slide">
     <div class="bg" style="background-image:url('shots/05-preserve.jpg')"></div><div class="scrim"></div>
     <div class="cap"><div class="kick">#2 &middot; Residential West &middot; donated, off-budget</div>
@@ -197,6 +208,7 @@
       </ul></div>
   </section>
 
+  <!-- 07 — their COMMUNITY -->
   <section class="slide">
     <div class="bg" style="background-image:url('shots/06-park.jpg')"></div><div class="scrim"></div>
     <div class="cap"><div class="kick">Community &middot; 11 locations</div>
@@ -209,6 +221,7 @@
       </ul></div>
   </section>
 
+  <!-- 08 — their A PLACE TO GROW OLD -->
   <section class="slide">
     <div class="bg" style="background-image:url('shots/07-senior.jpg')"></div><div class="scrim"></div>
     <div class="cap"><div class="kick">#14&ndash;15 &middot; the quiet east</div>
@@ -221,6 +234,20 @@
       </ul></div>
   </section>
 
+  <!-- 09 — their SHOPPING AND ENTERTAINMENT -->
+  <section class="slide">
+    <div class="bg" style="background-image:url('shots/09-mall.jpg')"></div><div class="scrim"></div>
+    <div class="cap"><div class="kick">Errands &amp; entertainment</div>
+      <h1>Shopping and entertainment</h1>
+      <ul class="pts">
+        <li><b>Havenbrook Commons Mall</b> — the anchor of the Commerce Blvd corridor</li>
+        <li><b>Bardsley&rsquo;s Department Store</b> and <b>Olsen&rsquo;s Market</b> for the essentials</li>
+        <li><b>Quarry Hill Museum</b> on the civic plaza — the rainy-day option</li>
+        <li><b>Willow Creek Park</b> and <b>The Whippoorwill Coffeehouse</b> for the slower afternoons</li>
+      </ul></div>
+  </section>
+
+  <!-- 10 — their HOW WE LAID IT OUT -->
   <section class="slide">
     <div class="bg" style="background-image:url('shots/02-plan.jpg')"></div><div class="scrim"></div>
     <div class="cap"><div class="kick">Layout &amp; placement</div>
@@ -233,8 +260,33 @@
       </ul></div>
   </section>
 
+  <!-- 11 — their HAVEN DOWNTOWN -->
   <section class="slide">
-    <div class="bg" style="background-image:url('shots/06-park.jpg')"></div><div class="scrim"></div>
+    <div class="bg" style="background-image:url('shots/11-downtown.jpg')"></div><div class="scrim"></div>
+    <div class="cap"><div class="kick">The town center</div>
+      <h1>Haven downtown</h1>
+      <ul class="pts">
+        <li>A walkable core where the campus, the hospital district, and the shops share a few busy blocks</li>
+        <li>Students can go class &rarr; clinic &rarr; coffee without ever needing a car</li>
+        <li>The plaza and the old-town skyline — Pinnacle Health Plaza, Foundry One — give it a real centre</li>
+      </ul></div>
+  </section>
+
+  <!-- 12 — their SCHOOL DISTRICT -->
+  <section class="slide">
+    <div class="bg" style="background-image:url('shots/12-school.jpg')"></div><div class="scrim"></div>
+    <div class="cap"><div class="kick">#20 &middot; Southwest neighborhoods</div>
+      <h1>Havenbrook Unified School District</h1>
+      <ul class="pts">
+        <li>The K-12 anchor for the family neighborhoods on the southwest side</li>
+        <li>Health-science electives and athletics feed straight into the university pipeline</li>
+        <li>Sits inside the neighborhoods it serves — kids walk, not bus</li>
+      </ul></div>
+  </section>
+
+  <!-- 13 — NEW: trade-offs (rubric: explain decisions) -->
+  <section class="slide">
+    <div class="bg" style="background-image:url('shots/08-close.jpg')"></div><div class="scrim"></div>
     <div class="cap"><div class="kick">Decision-making</div>
       <h1>What we traded</h1>
       <ul class="pts">
@@ -245,6 +297,7 @@
       </ul></div>
   </section>
 
+  <!-- 14 — NEW: real budget sheet (replaces the app screenshot) -->
   <section class="slide paper">
     <div class="cap" style="top:5.5%;transform:none;max-width:none">
       <div class="kick">The budget</div>
@@ -288,8 +341,9 @@
     </div>
   </section>
 
+  <!-- 15 — NEW: conclusion -->
   <section class="slide">
-    <div class="bg" style="background-image:url('shots/08-close.jpg')"></div><div class="scrim"></div>
+    <div class="bg" style="background-image:url('shots/01-cover.jpg')"></div><div class="scrim"></div>
     <div class="cap"><div class="kick">Conclusion</div>
       <h1>Why it works</h1>
       <ul class="pts">
@@ -300,6 +354,7 @@
       </ul></div>
   </section>
 
+  <!-- 16 — NEW: references -->
   <section class="slide paper">
     <div class="cap"><div class="kick">References</div>
       <h1>Where our numbers came from</h1>
@@ -310,7 +365,7 @@
         <li><b>Three.js</b> — we built and rendered the town as a walkable 3D world</li>
       </ul></div>
     <div class="side">
-      <b>Abhinav Mishra</b><br><b>Dinesh Yara</b><br><b>Davi Ogland</b>
+      <b>Dinesh Yara</b><br><b>Abhinav Mishra</b><br><b>Davi Ogland</b>
       <div style="margin-top:14px;font-size:11px;letter-spacing:1.6px;text-transform:uppercase">Havenbrook &middot; HST project</div>
     </div>
   </section>
