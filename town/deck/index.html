@@ -22,15 +22,14 @@
     transition:transform 9s cubic-bezier(.2,.6,.2,1); transform:scale(1); }
   .slide.cur .bg { transform:scale(1.045); }   /* slow push — alive, not static */
   .scrim { position:absolute; inset:0;
-    background:linear-gradient(14deg, rgba(5,16,22,.86) 0%, rgba(5,16,22,.45) 40%, rgba(5,16,22,.12) 68%); }
+    background:linear-gradient(10deg, rgba(5,14,18,.8) 0%, rgba(5,14,18,.38) 42%, rgba(5,14,18,0) 70%); }
 
   .cap { position:absolute; left:6.5%; bottom:10%; max-width:660px; color:var(--ink);
     opacity:0; transform:translateY(18px); transition:opacity .7s .25s, transform .7s .25s cubic-bezier(.2,.7,.3,1);
     text-shadow:0 1px 10px rgba(0,0,0,.5); }
   .slide.cur .cap { opacity:1; transform:none; }
   .kick { font-size:clamp(10px,1vw,12px); letter-spacing:3.4px; font-weight:600; color:var(--sub);
-    text-transform:uppercase; margin-bottom:14px; display:flex; align-items:center; gap:12px; }
-  .kick::after { content:''; height:1px; width:44px; background:var(--rule); }
+    text-transform:uppercase; margin-bottom:14px; }
   h1 { font-family:"Liberation Sans Narrow","Arial Narrow","Oswald","Anton","Helvetica Neue",Arial,sans-serif;
     font-size:clamp(38px,5.2vw,64px); line-height:1.02; font-weight:700; letter-spacing:.02em;
     text-transform:uppercase; margin-bottom:16px; text-wrap:balance; }

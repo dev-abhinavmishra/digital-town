@@ -16,26 +16,23 @@ const css = `
   font-family:"Segoe UI", system-ui, -apple-system, sans-serif;
   --ink:#eef4f6; --sub:#a7bcc6; --dim:#7e97a2; --rule:rgba(238,244,246,.28); }
 #uiDeck.on { display:block; }
-#uiDeck .bar { position:absolute; left:0; right:0; height:0; background:#050b0f;
-  transition:height .9s cubic-bezier(.7,0,.3,1); }
-#uiDeck .bar.t { top:0 } #uiDeck .bar.b { bottom:0 }
-#uiDeck.on .bar { height:56px; }
 #uiDeck .scrim { position:absolute; inset:0;
-  background:linear-gradient(12deg, rgba(5,16,22,.82) 0%, rgba(5,16,22,.38) 34%,
-    rgba(5,16,22,0) 62%),
-  radial-gradient(120% 90% at 50% 0%, rgba(5,16,22,0) 60%, rgba(5,16,22,.24) 100%); }
-#uiDeck .cap { position:absolute; left:64px; bottom:88px; max-width:620px; color:var(--ink); }
+  background:linear-gradient(10deg, rgba(5,14,18,.8) 0%, rgba(5,14,18,.38) 42%,
+    rgba(5,14,18,0) 70%); }
+#uiDeck .cap { position:absolute; left:64px; bottom:56px; max-width:620px; color:var(--ink);
+  text-shadow:0 1px 10px rgba(0,0,0,.45); }
 #uiDeck .cap > * { opacity:0; transform:translateY(14px); }
 #uiDeck .cap.in > * { opacity:1; transform:none; transition:opacity .7s ease, transform .7s cubic-bezier(.2,.7,.3,1); }
 #uiDeck .cap.out > * { opacity:0; transform:translateY(-10px); transition:all .32s ease; }
 #uiDeck .cap > *:nth-child(1) { transition-delay:.15s } #uiDeck .cap > *:nth-child(2) { transition-delay:.28s }
 #uiDeck .cap > *:nth-child(3) { transition-delay:.42s } #uiDeck .cap > *:nth-child(4) { transition-delay:.55s }
 #uiDeck .kick { font-size:11px; letter-spacing:3.2px; font-weight:600; color:var(--sub);
-  text-transform:uppercase; margin-bottom:14px; display:flex; align-items:center; gap:12px; }
-#uiDeck .kick::after { content:''; height:1px; width:44px; background:var(--rule); }
-#uiDeck h1 { margin:0 0 14px; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
-  font-size:46px; line-height:1.06; font-weight:500; letter-spacing:.2px; text-wrap:balance; }
-#uiDeck h1.big { font-size:74px; letter-spacing:.5px; }
+  text-transform:uppercase; margin-bottom:14px; }
+#uiDeck h1 { margin:0 0 14px;
+  font-family:"Liberation Sans Narrow","Arial Narrow","Oswald","Anton","Helvetica Neue",Arial,sans-serif;
+  font-size:52px; line-height:1.02; font-weight:700; letter-spacing:.02em;
+  text-transform:uppercase; text-wrap:balance; }
+#uiDeck h1.big { font-size:88px; letter-spacing:.03em; }
 #uiDeck .body { font-size:14.5px; line-height:1.65; color:var(--sub); max-width:470px; }
 #uiDeck .pts { list-style:none; margin-top:2px; max-width:600px; }
 #uiDeck .pts li { font-size:13.5px; line-height:1.5; color:var(--sub);
@@ -58,8 +55,8 @@ const css = `
 #uiDeck .stats { display:flex; gap:26px; margin-top:20px; }
 #uiDeck .cap .team { margin-top:16px; font-size:10.5px; letter-spacing:2.4px;
   color:var(--dim); text-transform:uppercase; }
-#uiDeck .st b { display:block; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
-  font-size:26px; font-weight:500; color:var(--ink); }
+#uiDeck .st b { display:block; font-family:"Liberation Sans Narrow","Arial Narrow","Oswald",Arial,sans-serif;
+  font-size:30px; font-weight:700; color:var(--ink); }
 #uiDeck .st span { font-size:10px; letter-spacing:1.8px; text-transform:uppercase; color:var(--dim); }
 #uiDeck .bud { margin-top:18px; width:min(430px,60vw); }
 #uiDeck .bud .track { height:4px; display:flex; border-radius:2px; overflow:hidden;
@@ -68,23 +65,26 @@ const css = `
 #uiDeck .bud .rows { margin-top:12px; font-size:12.5px; color:var(--sub); line-height:2; }
 #uiDeck .bud .rows b { color:var(--ink); font-weight:600; }
 #uiDeck .dot { display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:8px; vertical-align:1px; }
-#uiDeck .meta { position:absolute; right:64px; bottom:88px; text-align:right; color:var(--dim); }
+#uiDeck .meta { position:absolute; right:64px; bottom:56px; text-align:right; color:var(--dim);
+  text-shadow:0 1px 8px rgba(0,0,0,.5); }
 #uiDeck .meta > * { opacity:0; transition:opacity .6s .5s; }
 #uiDeck.on .meta > * { opacity:1; }
-#uiDeck .cnt { font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
-  font-size:20px; color:var(--ink); letter-spacing:1px; }
+#uiDeck .cnt { font-family:"Liberation Sans Narrow","Arial Narrow","Oswald",Arial,sans-serif;
+  font-size:22px; font-weight:700; color:var(--ink); letter-spacing:2px; }
 #uiDeck .cnt i { font-style:normal; color:var(--dim); font-size:14px; margin:0 4px; }
 #uiDeck .keys { font-size:10px; letter-spacing:1.6px; margin-top:8px; text-transform:uppercase; }
-#uiDeck .prog { position:absolute; left:64px; right:64px; bottom:64px; height:1px;
+#uiDeck .prog { position:absolute; left:64px; right:64px; bottom:34px; height:1px;
   background:rgba(238,244,246,.16); opacity:0; transition:opacity .6s .5s; }
 #uiDeck.on .prog { opacity:1; }
 #uiDeck .prog i { display:block; height:100%; width:0; background:rgba(238,244,246,.75);
   transition:width .5s ease; }
-#uiDeck .brand { position:absolute; left:64px; top:14px; font-size:10px; letter-spacing:2.6px;
-  color:var(--dim); text-transform:uppercase; opacity:0; transition:opacity .6s .5s; }
+#uiDeck .brand { position:absolute; left:64px; top:26px; font-size:10px; letter-spacing:2.6px;
+  color:var(--dim); text-transform:uppercase; opacity:0; transition:opacity .6s .5s;
+  text-shadow:0 1px 6px rgba(0,0,0,.7); }
 #uiDeck.on .brand { opacity:1; }
-#uiDeck .x { position:absolute; right:64px; top:14px; font-size:10px; letter-spacing:2px;
-  color:var(--dim); text-transform:uppercase; opacity:0; transition:opacity .6s .5s; }
+#uiDeck .x { position:absolute; right:64px; top:26px; font-size:10px; letter-spacing:2px;
+  color:var(--dim); text-transform:uppercase; opacity:0; transition:opacity .6s .5s;
+  text-shadow:0 1px 6px rgba(0,0,0,.7); }
 #uiDeck.on .x { opacity:1; }
 #uiDeck .edge { position:absolute; top:0; bottom:0; width:22%; pointer-events:auto; }
 #uiDeck .edge.l { left:0 } #uiDeck .edge.r { right:0 }
@@ -93,7 +93,7 @@ const css = `
   pointer-events:none; }
 /* corner locator: desaturated ortho map of the whole town; the university is
    always marked gold, white dots track where this slide's camera lands */
-#uiDeck .mapbox { position:absolute; right:64px; top:76px; width:min(228px,22vw);
+#uiDeck .mapbox { position:absolute; right:64px; top:56px; width:min(228px,22vw);
   aspect-ratio:89/80; border:1px solid var(--rule); background:#0a1418;
   box-shadow:0 10px 30px rgba(0,0,0,.5); opacity:0; transition:opacity .6s .5s; }
 #uiDeck.on .mapbox { opacity:1; }
@@ -121,8 +121,7 @@ export function installDeck() {
   document.head.appendChild(style);
   const root = document.createElement('div');
   root.id = 'uiDeck';
-  root.innerHTML = `<div class="bar t"></div><div class="bar b"></div>
-    <div class="scrim"></div><div class="dip"></div>
+  root.innerHTML = `<div class="scrim"></div><div class="dip"></div>
     <div class="brand">${TOWN.name} — a community planned around care</div>
     <div class="x">ESC to exit</div>
     <div class="cap"></div>
