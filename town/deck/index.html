@@ -28,8 +28,6 @@
     opacity:0; transform:translateY(18px); transition:opacity .7s .25s, transform .7s .25s cubic-bezier(.2,.7,.3,1);
     text-shadow:0 1px 10px rgba(0,0,0,.5); }
   .slide.cur .cap { opacity:1; transform:none; }
-  .kick { font-size:clamp(10px,1vw,12px); letter-spacing:3.4px; font-weight:600; color:var(--sub);
-    text-transform:uppercase; margin-bottom:14px; }
   h1 { font-family:"Liberation Sans Narrow","Arial Narrow","Oswald","Anton","Helvetica Neue",Arial,sans-serif;
     font-size:clamp(38px,5.2vw,64px); line-height:1.02; font-weight:700; letter-spacing:.02em;
     text-transform:uppercase; margin-bottom:16px; text-wrap:balance; }
@@ -59,7 +57,6 @@
     text-shadow:none; }
   .paper .slide.cur .cap, .paper.slide.cur .cap { transform:translateY(-50%); opacity:1; }
   .paper .cap { transition:opacity .7s .25s; }
-  .paper .kick { color:var(--papersub); } .paper .kick::after { background:rgba(22,50,62,.3); }
   .paper h1 { color:var(--paperink); }
   .paper .body { color:var(--papersub); }
   .paper .pts li { color:var(--papersub); }
@@ -113,21 +110,6 @@
     transform:translate(12px,-50%); white-space:nowrap; }
   .mapbox .mtag { position:absolute; left:8px; top:6px; font-size:9px;
     letter-spacing:1.8px; color:rgba(238,244,246,.85); text-shadow:0 1px 4px rgba(0,0,0,.9); }
-
-  /* chrome: brand, counter, progress — hairlines only */
-  .brand { position:fixed; left:48px; top:22px; z-index:9; font-size:10px; letter-spacing:2.6px;
-    color:var(--dim); text-transform:uppercase; transition:color .4s; }
-  .cnt { position:fixed; right:48px; top:22px; z-index:9; font-family:"Liberation Sans Narrow","Arial Narrow",Arial,sans-serif;
-    font-size:17px; letter-spacing:2px; color:var(--ink); transition:color .4s; }
-  .cnt i { font-style:normal; color:var(--dim); margin:0 5px; font-size:13px; }
-  .prog { position:fixed; left:48px; right:48px; bottom:34px; height:1px; z-index:9;
-    background:rgba(238,244,246,.16); }
-  .prog i { display:block; height:100%; width:0; background:rgba(238,244,246,.75); transition:width .6s ease; }
-  .keys { position:fixed; right:48px; bottom:24px; z-index:9; font-size:9.5px; letter-spacing:1.8px;
-    color:var(--dim); text-transform:uppercase; }
-  .darkchrome .brand, .darkchrome .cnt, .darkchrome .keys { color:#8a9490; }
-  .darkchrome .prog { background:rgba(22,50,62,.14); } .darkchrome .prog i { background:rgba(22,50,62,.5); }
-  .darkchrome .cnt { color:var(--paperink); } .darkchrome .cnt i { color:var(--papersub); }
   .edge { position:fixed; top:0; bottom:0; width:18%; z-index:8; cursor:pointer; }
   .edge.l { left:0 } .edge.r { right:0 }
 
@@ -141,7 +123,7 @@
     .cap { opacity:1 !important; transform:none !important; }
     .mapbox { opacity:1 !important; transform:none !important; }
     .bg { inset:0; transform:none !important; }
-    .brand, .cnt, .prog, .keys, .edge { display:none; }
+    .edge { display:none; }
   }
 </style>
 </head>
@@ -151,10 +133,8 @@
   <!-- 01 — their cover -->
   <section class="slide">
     <div class="bg" style="background-image:url('shots/01-cover.jpg')"></div><div class="scrim"></div>
-    <div class="cap"><div class="kick">Our Town Healthcare System project</div>
-      <h1 class="cover">HAVENBROOK</h1>
-      <div class="body">The town we designed around a med school — 26 buildings, all named, all budgeted.</div>
-      <div class="body" style="margin-top:16px;font-size:11px;letter-spacing:2.4px;text-transform:uppercase;color:var(--dim)">Dinesh Yara &middot; Abhinav Mishra &middot; Davi Ogland &nbsp;·&nbsp; HST &middot; Period 4</div></div>
+    <div class="cap"><h1 class="cover">HAVENBROOK</h1>
+      <div class="body" style="margin-top:8px;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--dim)">By: Dinesh Yara, Abhinav Mishra, Davi Ogland &nbsp;&middot;&nbsp; HST &middot; Period 4</div></div>
       <div class="mapbox"><img src="shots/minimap.jpg" alt=""><span class="mtag">N &uarr;</span><i class="u" style="left:51.39%;top:39.54%"></i><em class="ulab" style="left:51.39%;top:39.54%">University</em><i style="left:47.91%;top:47.29%"></i> <i style="left:48.61%;top:48.45%"></i></div>
   </section>
 
@@ -162,8 +142,7 @@
   <!-- 02 — NEW: town overview (rubric: describe your town) -->
   <section class="slide">
     <div class="bg" style="background-image:url('shots/02-plan.jpg')"></div><div class="scrim"></div>
-    <div class="cap"><div class="kick">The town</div>
-      <h1>Zoned around its med school</h1>
+    <div class="cap"><h1>Zoned around its med school</h1>
       <ul class="pts">
         <li>The donated campus sits dead centre — every district zones outward from it</li>
         <li>Care runs along Wellness Way up north; errands run along Commerce Blvd down south</li>
@@ -183,8 +162,7 @@
   <!-- 03 — their WHO LIVES HERE: big-number layout -->
   <section class="slide">
     <div class="bg" style="background-image:url('shots/03-people.jpg')"></div><div class="scrim"></div>
-    <div class="cap"><div class="kick">Population &amp; demographics</div>
-      <h1>Who lives here</h1>
+    <div class="cap"><h1>Who lives here</h1>
       <div class="bignums">
         <div class="n"><b>50%</b><span>College students — flats and a student clinic hug the campus</span></div>
         <div class="n"><b>30%</b><span>Families — houses cluster around the K-12</span></div>
@@ -198,8 +176,7 @@
   <!-- 04 — their UNIVERSITY SCHOOL OF MEDICINE (full name) -->
   <section class="slide">
     <div class="bg" style="background-image:url('shots/03-campus.jpg')"></div><div class="scrim"></div>
-    <div class="cap"><div class="kick">The anchor &middot; donated, off-budget</div>
-      <h1>Havenbrook University School of Medicine</h1>
+    <div class="cap"><h1>Havenbrook University School of Medicine</h1>
       <ul class="pts">
         <li>The Marchand Medical Library, Whitmore Anatomy Hall, and Caldecott Clinical Sciences Hall around one quad</li>
         <li>Sits at the town&rsquo;s centre — every district zones outward from it</li>
@@ -213,8 +190,7 @@
   <!-- 05 — their THIRTEEN WAYS TO GET CARE -->
   <section class="slide">
     <div class="bg" style="background-image:url('shots/04-wellness.jpg')"></div><div class="scrim"></div>
-    <div class="cap"><div class="kick">#3&ndash;15 &middot; Wellness Way</div>
-      <h1>Thirteen ways to get care</h1>
+    <div class="cap"><h1>Thirteen ways to get care</h1>
       <ul class="pts">
         <li><b>Emergency:</b> Havenbrook General Hospital and Garrison Medical Transport, a block apart on the Wellness spine</li>
         <li><b>Everyday:</b> Thacher Student Health Clinic, Brookfield Family Physicians, Marigold Dental Studio, Parallax Optical, Meridian Diagnostics Laboratory</li>
@@ -229,8 +205,7 @@
   <!-- 06 — their THE PRESERVE -->
   <section class="slide">
     <div class="bg" style="background-image:url('shots/05-preserve.jpg')"></div><div class="scrim"></div>
-    <div class="cap"><div class="kick">#2 &middot; Residential West &middot; donated, off-budget</div>
-      <h1>The Preserve at Havenbrook</h1>
+    <div class="cap"><h1>The Preserve at Havenbrook</h1>
       <ul class="pts">
         <li>The required housing development — cottages, duplexes, townhouses</li>
         <li>Preserve Commons Apartments fill the middle of the neighborhood</li>
@@ -244,8 +219,7 @@
   <!-- 07 — their COMMUNITY -->
   <section class="slide">
     <div class="bg" style="background-image:url('shots/06-park.jpg')"></div><div class="scrim"></div>
-    <div class="cap"><div class="kick">Community &middot; 11 locations</div>
-      <h1>The parts that aren&rsquo;t medicine</h1>
+    <div class="cap"><h1>The parts that aren&rsquo;t medicine</h1>
       <ul class="pts">
         <li><b>Errands:</b> Havenbrook Commons Mall, Bardsley&rsquo;s Department Store, Olsen&rsquo;s Market, Bellwether Pharmacy</li>
         <li><b>Food:</b> The Orchard Table, Mariposa Cantina, The Whippoorwill Coffeehouse</li>
@@ -259,8 +233,7 @@
   <!-- 08 — their A PLACE TO GROW OLD -->
   <section class="slide">
     <div class="bg" style="background-image:url('shots/07-senior.jpg')"></div><div class="scrim"></div>
-    <div class="cap"><div class="kick">#14&ndash;15 &middot; the quiet east</div>
-      <h1>A place to grow old</h1>
+    <div class="cap"><h1>A place to grow old</h1>
       <ul class="pts">
         <li>Halcyon House Senior Living — assisted living + memory care around a courtyard garden</li>
         <li>Stillpoint Hospice next door, so the hardest visits stay short and private</li>
@@ -274,8 +247,7 @@
   <!-- 09 — their SHOPPING AND ENTERTAINMENT -->
   <section class="slide">
     <div class="bg" style="background-image:url('shots/09-mall.jpg')"></div><div class="scrim"></div>
-    <div class="cap"><div class="kick">Errands &amp; entertainment</div>
-      <h1>Shopping and entertainment</h1>
+    <div class="cap"><h1>Shopping and entertainment</h1>
       <ul class="pts">
         <li><b>Havenbrook Commons Mall</b> — the anchor of the Commerce Blvd corridor</li>
         <li><b>Bardsley&rsquo;s Department Store</b> and <b>Olsen&rsquo;s Market</b> for the essentials</li>
@@ -289,8 +261,7 @@
   <!-- 10 — their HOW WE LAID IT OUT -->
   <section class="slide">
     <div class="bg" style="background-image:url('shots/02-plan.jpg')"></div><div class="scrim"></div>
-    <div class="cap"><div class="kick">Layout &amp; placement</div>
-      <h1>How we laid it out</h1>
+    <div class="cap"><h1>How we laid it out</h1>
       <ul class="pts">
         <li>Streets first: two arterials cross at the campus, 18 named streets fill the grid</li>
         <li>Hospital and EMS share the Wellness Way spine — minutes from anywhere</li>
@@ -304,8 +275,7 @@
   <!-- 11 — their HAVEN DOWNTOWN -->
   <section class="slide">
     <div class="bg" style="background-image:url('shots/11-downtown.jpg')"></div><div class="scrim"></div>
-    <div class="cap"><div class="kick">The town center</div>
-      <h1>Haven downtown</h1>
+    <div class="cap"><h1>Haven downtown</h1>
       <ul class="pts">
         <li>A walkable core where the campus, the hospital district, and the shops share a few busy blocks</li>
         <li>Students can go class &rarr; clinic &rarr; coffee without ever needing a car</li>
@@ -318,8 +288,7 @@
   <!-- 12 — their SCHOOL DISTRICT -->
   <section class="slide">
     <div class="bg" style="background-image:url('shots/12-school.jpg')"></div><div class="scrim"></div>
-    <div class="cap"><div class="kick">#20 &middot; Southwest neighborhoods</div>
-      <h1>Havenbrook Unified School District</h1>
+    <div class="cap"><h1>Havenbrook Unified School District</h1>
       <ul class="pts">
         <li>The K-12 anchor for the family neighborhoods on the southwest side</li>
         <li>Health-science electives and athletics feed straight into the university pipeline</li>
@@ -332,8 +301,7 @@
   <!-- 13 — NEW: trade-offs (rubric: explain decisions) -->
   <section class="slide">
     <div class="bg" style="background-image:url('shots/08-close.jpg')"></div><div class="scrim"></div>
-    <div class="cap"><div class="kick">Decision-making</div>
-      <h1>What we traded</h1>
+    <div class="cap"><h1>What we traded</h1>
       <ul class="pts">
         <li>The two donated sites freed ~$4.5M — so we bought 13 small facilities instead of one mega-campus</li>
         <li>Picked the mall over a second park — the Preserve already covers green space</li>
@@ -347,7 +315,6 @@
   <!-- 14 — NEW: real budget sheet (replaces the app screenshot) -->
   <section class="slide paper">
     <div class="cap" style="top:5.5%;transform:none;max-width:none">
-      <div class="kick">The budget</div>
       <h1 style="margin-bottom:0">Where the money went</h1>
     </div>
     <div class="sheet">
@@ -393,8 +360,7 @@
   <!-- 15 — NEW: conclusion -->
   <section class="slide">
     <div class="bg" style="background-image:url('shots/01-cover.jpg')"></div><div class="scrim"></div>
-    <div class="cap"><div class="kick">Conclusion</div>
-      <h1>Why it works</h1>
+    <div class="cap"><h1>Why it works</h1>
       <ul class="pts">
         <li>Students get the campus, the flats, the Thacher Student Health Clinic, and the Whippoorwill — no car needed</li>
         <li>Families get the school, Brookfield Family Physicians, Olsen&rsquo;s Market, and Willow Creek Park</li>
@@ -407,8 +373,7 @@
 
   <!-- 16 — NEW: references -->
   <section class="slide paper">
-    <div class="cap"><div class="kick">References</div>
-      <h1>Works Cited</h1>
+    <div class="cap"><h1>Works Cited</h1>
       <ul class="refs" style="margin-top:14px">
         <li>American Planning Association. <i>Complete Communities</i>. American Planning Association, www.planning.org/planning/complete-communities/. Accessed 5 Oct. 2026.</li>
         <li><i>Our Town Healthcare System: Digital Project Instructions</i>. Class handout, HST Period 4, Oct. 2026.</li>
@@ -425,24 +390,16 @@
 
 </div>
 
-<div class="brand">Havenbrook — a community planned around care</div>
-<div class="cnt" id="cnt"></div>
-<div class="keys">&larr; &rarr; navigate</div>
-<div class="prog"><i id="pi"></i></div>
 <div class="edge l" id="el"></div><div class="edge r" id="er"></div>
 
 <script>
 const slides = [...document.querySelectorAll('.slide')];
-const track = document.getElementById('track'), cnt = document.getElementById('cnt'),
-      pi = document.getElementById('pi');
+const track = document.getElementById('track');
 let i = 0;
 function go(n) {
   i = Math.max(0, Math.min(slides.length - 1, n));
   track.style.transform = `translateX(${-i * 100}%)`;
   slides.forEach((s, k) => s.classList.toggle('cur', k === i));
-  cnt.innerHTML = `${String(i + 1).padStart(2, '0')}<i>/</i>${String(slides.length).padStart(2, '0')}`;
-  pi.style.width = `${(i + 1) / slides.length * 100}%`;
-  document.body.classList.toggle('darkchrome', slides[i].classList.contains('paper'));
 }
 addEventListener('keydown', e => {
   if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') go(i + 1);
