@@ -216,8 +216,8 @@ export function installDeck() {
 
   function caption(s, idx) {
     const bits = [];
-    if (s.stats) {
-      bits.push(`<div class="stats">${Array.from({ length: s.stats.length / 2 }, (_, k) => stat(s.stats[k * 2], s.stats[k * 2 + 1])).join('')}</div>`);
+    if (s.pts) {
+      bits.push(`<ul class="pts">${s.pts.map(p => `<li>${p}</li>`).join('')}</ul>`);
     } else if (s.sheet) {
       const mk = cat => numd.filter(b => b.cat === cat)
         .map(b => `<div class="row"><i>${String(b.num).padStart(2, '0')}</i><em>${b.name}${KIND[b.id] ? ' · ' + KIND[b.id] : ''}</em><b>${fmt(b.cost)}</b></div>`).join('');
@@ -225,10 +225,12 @@ export function installDeck() {
         `<div class="col"><div class="colh">Healthcare <span>${money(byCat.health || 0)}</span></div>${mk('health')}</div>` +
         `<div class="col"><div class="colh">Community <span>${money(byCat.community || 0)}</span></div>${mk('community')}</div></div>` +
         `<div class="foot">Spent <b>${money(spent)}</b> of ${money(BUDGET)} · <b>${money(BUDGET - spent)}</b> unspent · university + housing were donated</div>`);
-    } else if (s.pts) {
-      bits.push(`<ul class="pts">${s.pts.map(p => `<li>${p}</li>`).join('')}</ul>`);
-    } else {
+    } else if (!s.stats) {
       bits.push(`<div class="body">${s.body}</div>`);
+    }
+    // pts and stats coexist — overview/demographics bullets sit above the stat row
+    if (s.stats) {
+      bits.push(`<div class="stats">${Array.from({ length: s.stats.length / 2 }, (_, k) => stat(s.stats[k * 2], s.stats[k * 2 + 1])).join('')}</div>`);
     }
     return `<div class="kick">${s.kick}</div><h1${s.cover ? ' class="big"' : ''}>${s.title}</h1>` + bits.join('') +
       (s.team ? `<div class="team">${s.team}</div>` : '');
