@@ -6,67 +6,76 @@
 <title>Havenbrook — A Community Planned Around Care</title>
 <style>
   :root {
-    --ink:#eef4f6; --sub:#a7bcc6; --dim:#7e97a2; --rule:rgba(238,244,246,.28);
+    --ink:#f4f7f8; --sub:#c4d3d9; --dim:#8fa5ae; --rule:rgba(244,247,248,.3);
     --paper:#f4f2ec; --paperink:#16323e; --papersub:#5d7380;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body { height:100%; overflow:hidden; background:#050b0f;
     font-family:"Segoe UI", system-ui, -apple-system, sans-serif; }
-  .serif { font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; }
+  .cond { font-family:"Liberation Sans Narrow","Arial Narrow","Oswald","Anton","Helvetica Neue",Arial,sans-serif; }
 
   #track { display:flex; height:100%; transition:transform .85s cubic-bezier(.7,0,.2,1); }
   .slide { position:relative; flex:0 0 100%; height:100%; overflow:hidden; }
 
-  /* full-bleed imagery with an editorial scrim — no cards on cards */
+  /* full-bleed town shots — the way the group's deck was built */
   .bg { position:absolute; inset:-4%; background-size:cover; background-position:center;
     transition:transform 9s cubic-bezier(.2,.6,.2,1); transform:scale(1); }
   .slide.cur .bg { transform:scale(1.045); }   /* slow push — alive, not static */
   .scrim { position:absolute; inset:0;
-    background:linear-gradient(14deg, rgba(5,16,22,.84) 0%, rgba(5,16,22,.42) 36%, rgba(5,16,22,0) 64%); }
+    background:linear-gradient(10deg, rgba(5,14,18,.8) 0%, rgba(5,14,18,.38) 42%, rgba(5,14,18,0) 70%); }
 
-  .cap { position:absolute; left:7.5%; bottom:12%; max-width:600px; color:var(--ink);
-    opacity:0; transform:translateY(18px); transition:opacity .7s .25s, transform .7s .25s cubic-bezier(.2,.7,.3,1); }
+  .cap { position:absolute; left:6.5%; bottom:10%; max-width:660px; color:var(--ink);
+    opacity:0; transform:translateY(18px); transition:opacity .7s .25s, transform .7s .25s cubic-bezier(.2,.7,.3,1);
+    text-shadow:0 1px 10px rgba(0,0,0,.5); }
   .slide.cur .cap { opacity:1; transform:none; }
-  .kick { font-size:11px; letter-spacing:3.4px; font-weight:600; color:var(--sub);
-    text-transform:uppercase; margin-bottom:16px; display:flex; align-items:center; gap:12px; }
-  .kick::after { content:''; height:1px; width:44px; background:var(--rule); }
-  h1 { font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
-    font-size:clamp(34px,4.6vw,52px); line-height:1.06; font-weight:500; letter-spacing:.2px;
-    margin-bottom:16px; text-wrap:balance; }
-  h1.cover { font-size:clamp(52px,7.5vw,86px); letter-spacing:.5px; }
-  h1 em { font-style:italic; font-weight:400; }
-  .body { font-size:clamp(13px,1.35vw,15px); line-height:1.66; color:var(--sub); max-width:480px; }
-  .pts { list-style:none; max-width:560px; }
-  .pts li { font-size:clamp(12px,1.15vw,13.5px); line-height:1.5; color:var(--sub);
-    padding-left:18px; position:relative; margin-bottom:7px; }
+  h1 { font-family:"Liberation Sans Narrow","Arial Narrow","Oswald","Anton","Helvetica Neue",Arial,sans-serif;
+    font-size:clamp(38px,5.2vw,64px); line-height:1.02; font-weight:700; letter-spacing:.02em;
+    text-transform:uppercase; margin-bottom:16px; text-wrap:balance; }
+  h1.cover { font-size:clamp(56px,9vw,104px); letter-spacing:.04em; }
+  .body { font-size:clamp(13px,1.35vw,15.5px); line-height:1.62; color:var(--sub); max-width:500px; }
+  .pts { list-style:none; max-width:620px; }
+  .pts li { font-size:clamp(12.5px,1.2vw,14px); line-height:1.55; color:var(--sub);
+    padding-left:18px; position:relative; margin-bottom:8px; }
   .pts li::before { content:'\2014'; position:absolute; left:0; color:var(--dim); }
   .pts li b { color:var(--ink); font-weight:600; }
 
+  /* the demographics slide: their big-number layout */
+  .bignums { display:flex; gap:clamp(24px,4vw,54px); margin-top:22px; }
+  .bignums .n b { display:block; font-family:"Liberation Sans Narrow","Arial Narrow",Arial,sans-serif;
+    font-size:clamp(44px,6vw,80px); font-weight:700; color:var(--ink); line-height:1; }
+  .bignums .n span { display:block; margin-top:6px; font-size:clamp(11px,1.05vw,13px);
+    line-height:1.4; color:var(--sub); max-width:170px; }
+
   .stats { display:flex; gap:34px; margin-top:24px; }
-  .st b { display:block; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
-    font-size:clamp(24px,2.6vw,32px); font-weight:500; color:var(--ink); }
+  .st b { display:block; font-family:"Liberation Sans Narrow","Arial Narrow",Arial,sans-serif;
+    font-size:clamp(26px,3vw,38px); font-weight:700; color:var(--ink); }
   .st span { font-size:10px; letter-spacing:1.8px; text-transform:uppercase; color:var(--dim); }
 
-  /* the ledger slide: paper instead of ink — one tonal shift, not a template */
+  /* the ledger + references slides: paper instead of ink — one tonal shift */
   .paper { background:var(--paper); }
-  .paper .cap { color:var(--paperink); left:7.5%; bottom:auto; top:50%; transform:translateY(-44%); max-width:560px; }
+  .paper .cap { color:var(--paperink); left:7.5%; bottom:auto; top:50%; transform:translateY(-44%); max-width:560px;
+    text-shadow:none; }
   .paper .slide.cur .cap, .paper.slide.cur .cap { transform:translateY(-50%); opacity:1; }
   .paper .cap { transition:opacity .7s .25s; }
-  .paper .kick { color:var(--papersub); } .paper .kick::after { background:rgba(22,50,62,.3); }
+  .paper h1 { color:var(--paperink); }
   .paper .body { color:var(--papersub); }
+  .paper .pts li { color:var(--papersub); }
+  .paper .pts li b { color:var(--paperink); }
+  .paper .pts li::before { color:rgba(22,50,62,.42); }
   .bud { margin-top:26px; width:min(520px,60vw); }
   .bud .track { height:5px; display:flex; border-radius:3px; overflow:hidden; background:rgba(22,50,62,.12); }
   .bud .track i { height:100%; }
   .bud .rows { margin-top:14px; font-size:13.5px; color:var(--papersub); line-height:2.1; }
   .bud .rows b { color:var(--paperink); font-weight:600; }
   .dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:9px; vertical-align:1px; }
+  .refs { list-style:none; max-width:620px; }
+  .refs li { font-size:13px; line-height:1.65; color:var(--papersub);
+    padding-left:1.7em; text-indent:-1.7em; margin-bottom:11px; }
+  .refs li i { color:var(--paperink); }
   .paper .side { position:absolute; right:7.5%; top:50%; transform:translateY(-50%);
     text-align:right; color:var(--papersub); font-size:12.5px; line-height:2; letter-spacing:.3px; }
-  .paper .side b { font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
-    font-size:20px; color:var(--paperink); font-weight:500; display:block; }
-  .paper .pts li { color:var(--papersub); }
-  .paper .pts li b { color:var(--paperink); }
-  .paper .pts li::before { color:rgba(22,50,62,.42); }
+  .paper .side b { font-family:"Liberation Sans Narrow","Arial Narrow",Arial,sans-serif;
+    font-size:22px; color:var(--paperink); font-weight:700; display:block; letter-spacing:.03em; }
   /* budget sheet slide — itemized table, two columns */
   .sheet { position:absolute; left:7.5%; right:7.5%; top:22%; display:flex; gap:5%; }
   .sheet .col { flex:1; }
@@ -85,20 +94,22 @@
     padding-top:12px; letter-spacing:.3px; display:flex; justify-content:space-between; }
   .sheetfoot b { color:var(--paperink); font-weight:600; }
 
-  /* chrome: brand, counter, progress — hairlines only */
-  .brand { position:fixed; left:48px; top:22px; z-index:9; font-size:10px; letter-spacing:2.6px;
-    color:var(--dim); text-transform:uppercase; transition:color .4s; }
-  .cnt { position:fixed; right:48px; top:22px; z-index:9; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
-    font-size:15px; letter-spacing:1.5px; color:var(--ink); transition:color .4s; }
-  .cnt i { font-style:normal; color:var(--dim); margin:0 5px; font-size:12px; }
-  .prog { position:fixed; left:48px; right:48px; bottom:34px; height:1px; z-index:9;
-    background:rgba(238,244,246,.16); }
-  .prog i { display:block; height:100%; width:0; background:rgba(238,244,246,.75); transition:width .6s ease; }
-  .keys { position:fixed; right:48px; bottom:24px; z-index:9; font-size:9.5px; letter-spacing:1.8px;
-    color:var(--dim); text-transform:uppercase; }
-  .darkchrome .brand, .darkchrome .cnt, .darkchrome .keys { color:#8a9490; }
-  .darkchrome .prog { background:rgba(22,50,62,.14); } .darkchrome .prog i { background:rgba(22,50,62,.5); }
-  .darkchrome .cnt { color:var(--paperink); } .darkchrome .cnt i { color:var(--papersub); }
+
+  /* corner locator: desaturated ortho map of the town — gold = university, white = this slide's stops */
+  .mapbox { position:absolute; right:4.5%; top:5%; width:min(230px,20vw); aspect-ratio:89/80;
+    border:1px solid var(--rule); background:#0a1418; box-shadow:0 10px 30px rgba(0,0,0,.5);
+    opacity:0; transform:scale(.97); transition:opacity .7s .35s, transform .7s .35s; }
+  .slide.cur .mapbox { opacity:1; transform:none; }
+  .mapbox img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+  .mapbox i { position:absolute; width:8px; height:8px; border-radius:50%;
+    transform:translate(-50%,-50%); background:#f6fbfd;
+    box-shadow:0 0 0 4px rgba(246,251,253,.22), 0 1px 6px rgba(0,0,0,.8); }
+  .mapbox i.u { background:#f3d27a; box-shadow:0 0 0 3px rgba(243,210,122,.3); }
+  .mapbox .ulab { position:absolute; font-style:normal; font-size:8px; letter-spacing:1.4px;
+    text-transform:uppercase; color:#f3d27a; text-shadow:0 1px 4px rgba(0,0,0,.9);
+    transform:translate(12px,-50%); white-space:nowrap; }
+  .mapbox .mtag { position:absolute; left:8px; top:6px; font-size:9px;
+    letter-spacing:1.8px; color:rgba(238,244,246,.85); text-shadow:0 1px 4px rgba(0,0,0,.9); }
   .edge { position:fixed; top:0; bottom:0; width:18%; z-index:8; cursor:pointer; }
   .edge.l { left:0 } .edge.r { right:0 }
 
@@ -110,31 +121,33 @@
     .slide { width:100vw; height:100vh; page-break-after:always;
       break-after:page; }
     .cap { opacity:1 !important; transform:none !important; }
+    .mapbox { opacity:1 !important; transform:none !important; }
     .bg { inset:0; transform:none !important; }
-    .brand, .cnt, .prog, .keys, .edge { display:none; }
+    .edge { display:none; }
   }
 </style>
 </head>
 <body>
 <div id="track">
 
+  <!-- 01 — their cover -->
   <section class="slide">
     <div class="bg" style="background-image:url('shots/01-cover.jpg')"></div><div class="scrim"></div>
-    <div class="cap"><div class="kick">HST project &middot; a digital town</div>
-      <h1 class="cover"><em>HAVENBROOK</em></h1>
-      <div class="body">The town we designed around a med school — 26 buildings, all named, all budgeted.</div>
-      <div class="body" style="margin-top:16px;font-size:10.5px;letter-spacing:2.4px;text-transform:uppercase;color:var(--dim)">Abhinav Mishra &middot; Dinesh Yara &middot; Davi Ogland</div></div>
+    <div class="cap"><h1 class="cover">HAVENBROOK</h1>
+      <div class="body" style="margin-top:8px;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--dim)">By: Dinesh Yara, Abhinav Mishra, Davi Ogland &nbsp;&middot;&nbsp; HST &middot; Period 4</div></div>
+      <div class="mapbox"><img src="shots/minimap.jpg" alt=""><span class="mtag">N &uarr;</span><i class="u" style="left:51.39%;top:39.54%"></i><em class="ulab" style="left:51.39%;top:39.54%">University</em><i style="left:47.91%;top:47.29%"></i> <i style="left:48.61%;top:48.45%"></i></div>
   </section>
 
+
+  <!-- 02 — NEW: town overview (rubric: describe your town) -->
   <section class="slide">
     <div class="bg" style="background-image:url('shots/02-plan.jpg')"></div><div class="scrim"></div>
-    <div class="cap"><div class="kick">The brief</div>
-      <h1>What we had to build</h1>
+    <div class="cap"><h1>Zoned around its med school</h1>
       <ul class="pts">
-        <li>A town growing around a new medical university — donated, off-budget</li>
-        <li>A housing development — also donated</li>
-        <li>At least 7 healthcare facilities and 3 community locations</li>
-        <li>A real name on every building, all inside <b>$10,000,000</b></li>
+        <li>The donated campus sits dead centre — every district zones outward from it</li>
+        <li>Care runs along Wellness Way up north; errands run along Commerce Blvd down south</li>
+        <li>Housing and the K-12 hold the west; senior care gets the quiet northeast corner</li>
+        <li>The rules we had to hit: 7+ healthcare sites, 3+ community spots, a name on every building, all inside <b>$10,000,000</b></li>
       </ul>
       <div class="stats">
         <div class="st"><b>$9.95M</b><span>spent of $10M</span></div>
@@ -142,126 +155,180 @@
         <div class="st"><b>11</b><span>community sites</span></div>
         <div class="st"><b>18</b><span>named streets</span></div>
       </div></div>
+      <div class="mapbox"><img src="shots/minimap.jpg" alt=""><span class="mtag">N &uarr;</span><i class="u" style="left:51.39%;top:39.54%"></i><em class="ulab" style="left:51.39%;top:39.54%">University</em><i style="left:49.30%;top:47.67%"></i> <i style="left:49.30%;top:48.84%"></i></div>
   </section>
 
+
+  <!-- 03 — their WHO LIVES HERE: big-number layout -->
   <section class="slide">
-    <div class="bg" style="background-image:url('shots/05-preserve.jpg')"></div><div class="scrim"></div>
-    <div class="cap"><div class="kick">Population &amp; demographics</div>
-      <h1>Who lives here</h1>
-      <ul class="pts">
-        <li>Half are <b>college students</b> — flats and a student clinic hug the campus</li>
-        <li>About a third are <b>families</b> — houses cluster around the K-12</li>
-        <li>One in five is <b>65+</b> — senior living and hospice sit in the quiet east</li>
-        <li>That mix is why the map looks the way it does</li>
-      </ul>
-      <div class="stats">
-        <div class="st"><b>50%</b><span>college students</span></div>
-        <div class="st"><b>30%</b><span>families</span></div>
-        <div class="st"><b>20%</b><span>adults 65+</span></div>
-      </div></div>
+    <div class="bg" style="background-image:url('shots/03-people.jpg')"></div><div class="scrim"></div>
+    <div class="cap"><h1>Who lives here</h1>
+      <div class="bignums">
+        <div class="n"><b>50%</b><span>College students — flats and a student clinic hug the campus</span></div>
+        <div class="n"><b>30%</b><span>Families — houses cluster around the K-12</span></div>
+        <div class="n"><b>20%</b><span>Adults 65+ — senior living and hospice sit in the quiet east</span></div>
+      </div>
+      <div class="body" style="margin-top:18px">That mix is why the map looks the way it does.</div></div>
+      <div class="mapbox"><img src="shots/minimap.jpg" alt=""><span class="mtag">N &uarr;</span><i class="u" style="left:51.39%;top:39.54%"></i><em class="ulab" style="left:51.39%;top:39.54%">University</em><i style="left:31.19%;top:39.92%"></i> <i style="left:31.89%;top:59.30%"></i> <i style="left:69.85%;top:29.85%"></i></div>
   </section>
 
+
+  <!-- 04 — their UNIVERSITY SCHOOL OF MEDICINE (full name) -->
   <section class="slide">
     <div class="bg" style="background-image:url('shots/03-campus.jpg')"></div><div class="scrim"></div>
-    <div class="cap"><div class="kick">The anchor &middot; donated, off-budget</div>
-      <h1>University School of Medicine</h1>
+    <div class="cap"><h1>Havenbrook University School of Medicine</h1>
       <ul class="pts">
-        <li>Med school, the Marchand library, and Whitmore + Caldecott halls around one quad</li>
-        <li>Sits at the town&rsquo;s center — every district zones outward from it</li>
+        <li>The Marchand Medical Library, Whitmore Anatomy Hall, and Caldecott Clinical Sciences Hall around one quad</li>
+        <li>Sits at the town&rsquo;s centre — every district zones outward from it</li>
         <li>Student flats wrap the west and south edges</li>
         <li>It&rsquo;s why the town exists, so it gets the best spot</li>
       </ul></div>
+      <div class="mapbox"><img src="shots/minimap.jpg" alt=""><span class="mtag">N &uarr;</span><i class="u" style="left:51.39%;top:39.54%"></i><em class="ulab" style="left:51.39%;top:39.54%">University</em><i style="left:51.39%;top:39.92%"></i> <i style="left:51.39%;top:41.67%"></i></div>
   </section>
 
+
+  <!-- 05 — their THIRTEEN WAYS TO GET CARE -->
   <section class="slide">
     <div class="bg" style="background-image:url('shots/04-wellness.jpg')"></div><div class="scrim"></div>
-    <div class="cap"><div class="kick">#3&ndash;15 &middot; Wellness Way</div>
-      <h1>Thirteen ways to get care</h1>
+    <div class="cap"><h1>Thirteen ways to get care</h1>
       <ul class="pts">
-        <li><b>Emergency:</b> Havenbrook General + Garrison EMS, a block apart on the Wellness spine</li>
-        <li><b>Everyday:</b> Thacher clinic, Brookfield physicians, Marigold dental, Parallax optical, Meridian labs</li>
-        <li><b>Long-term:</b> Stoneleigh rehab, Ashwood behavioral health, Halcyon House, Stillpoint hospice</li>
-        <li><b>Public health:</b> the county Health Department &middot; <b>At home:</b> Innisfree visits</li>
+        <li><b>Emergency:</b> Havenbrook General Hospital and Garrison Medical Transport, a block apart on the Wellness spine</li>
+        <li><b>Everyday:</b> Thacher Student Health Clinic, Brookfield Family Physicians, Marigold Dental Studio, Parallax Optical, Meridian Diagnostics Laboratory</li>
+        <li><b>Long-term:</b> Stoneleigh Rehabilitation Center, Ashwood Behavioral Health Center, Halcyon House Senior Living, Stillpoint Hospice</li>
+        <li><b>Public health:</b> Havenbrook County Health Department &middot; <b>At home:</b> Innisfree Home Health</li>
+        <li><b>Why these:</b> every site maps to a resident — students, families, and the 65+ block</li>
       </ul></div>
+      <div class="mapbox"><img src="shots/minimap.jpg" alt=""><span class="mtag">N &uarr;</span><i class="u" style="left:51.39%;top:39.54%"></i><em class="ulab" style="left:51.39%;top:39.54%">University</em><i style="left:52.79%;top:30.43%"></i> <i style="left:47.21%;top:37.52%"></i> <i style="left:58.19%;top:27.72%"></i></div>
   </section>
 
+
+  <!-- 06 — their THE PRESERVE -->
   <section class="slide">
     <div class="bg" style="background-image:url('shots/05-preserve.jpg')"></div><div class="scrim"></div>
-    <div class="cap"><div class="kick">#2 &middot; Residential West &middot; donated, off-budget</div>
-      <h1>The Preserve</h1>
+    <div class="cap"><h1>The Preserve at Havenbrook</h1>
       <ul class="pts">
         <li>The required housing development — cottages, duplexes, townhouses</li>
-        <li>Preserve Commons apartments fill the middle of the neighborhood</li>
-        <li>Scholar&rsquo;s Walk + University Lofts take students; Midtown Flats takes downtown</li>
+        <li>Preserve Commons Apartments fill the middle of the neighborhood</li>
+        <li>Scholar&rsquo;s Court and Scholar&rsquo;s Walk apartments plus University Lofts take the students; Midtown Flats takes downtown</li>
         <li>Nobody is more than a short walk from campus or a bus route</li>
       </ul></div>
+      <div class="mapbox"><img src="shots/minimap.jpg" alt=""><span class="mtag">N &uarr;</span><i class="u" style="left:51.39%;top:39.54%"></i><em class="ulab" style="left:51.39%;top:39.54%">University</em><i style="left:33.28%;top:56.97%"></i> <i style="left:31.54%;top:58.91%"></i></div>
   </section>
 
+
+  <!-- 07 — their COMMUNITY -->
   <section class="slide">
     <div class="bg" style="background-image:url('shots/06-park.jpg')"></div><div class="scrim"></div>
-    <div class="cap"><div class="kick">Community &middot; 11 locations</div>
-      <h1>The parts that aren&rsquo;t medicine</h1>
+    <div class="cap"><h1>The parts that aren&rsquo;t medicine</h1>
       <ul class="pts">
-        <li><b>Errands:</b> Havenbrook Commons mall, Bardsley&rsquo;s, Olsen&rsquo;s Market, Bellwether Pharmacy</li>
-        <li><b>Food:</b> The Orchard Table, Mariposa Cantina, The Whippoorwill coffeehouse</li>
+        <li><b>Errands:</b> Havenbrook Commons Mall, Bardsley&rsquo;s Department Store, Olsen&rsquo;s Market, Bellwether Pharmacy</li>
+        <li><b>Food:</b> The Orchard Table, Mariposa Cantina, The Whippoorwill Coffeehouse</li>
         <li><b>Outside:</b> Willow Creek Park — pond, trails, bandshell</li>
-        <li><b>The boring-but-needed:</b> post office, school district, Quarry Hill Museum</li>
+        <li><b>The boring-but-needed:</b> Havenbrook Post Office, Havenbrook Unified School District, Quarry Hill Museum</li>
       </ul></div>
+      <div class="mapbox"><img src="shots/minimap.jpg" alt=""><span class="mtag">N &uarr;</span><i class="u" style="left:51.39%;top:39.54%"></i><em class="ulab" style="left:51.39%;top:39.54%">University</em><i style="left:68.81%;top:69.38%"></i> <i style="left:52.09%;top:68.14%"></i> <i style="left:52.09%;top:47.44%"></i></div>
   </section>
 
+
+  <!-- 08 — their A PLACE TO GROW OLD -->
   <section class="slide">
     <div class="bg" style="background-image:url('shots/07-senior.jpg')"></div><div class="scrim"></div>
-    <div class="cap"><div class="kick">#14&ndash;15 &middot; the quiet east</div>
-      <h1>A place to grow old</h1>
+    <div class="cap"><h1>A place to grow old</h1>
       <ul class="pts">
-        <li>Halcyon House — assisted living + memory care around a courtyard garden</li>
+        <li>Halcyon House Senior Living — assisted living + memory care around a courtyard garden</li>
         <li>Stillpoint Hospice next door, so the hardest visits stay short and private</li>
-        <li>Innisfree home health means seniors keep their own homes longer</li>
+        <li>Innisfree Home Health means seniors keep their own homes longer</li>
         <li>The whole block sits on Sunset Ridge — farthest from traffic, closest to quiet</li>
       </ul></div>
+      <div class="mapbox"><img src="shots/minimap.jpg" alt=""><span class="mtag">N &uarr;</span><i class="u" style="left:51.39%;top:39.54%"></i><em class="ulab" style="left:51.39%;top:39.54%">University</em><i style="left:67.42%;top:28.30%"></i> <i style="left:74.80%;top:33.80%"></i></div>
   </section>
 
+
+  <!-- 09 — their SHOPPING AND ENTERTAINMENT -->
+  <section class="slide">
+    <div class="bg" style="background-image:url('shots/09-mall.jpg')"></div><div class="scrim"></div>
+    <div class="cap"><h1>Shopping and entertainment</h1>
+      <ul class="pts">
+        <li><b>Havenbrook Commons Mall</b> — the anchor of the Commerce Blvd corridor</li>
+        <li><b>Bardsley&rsquo;s Department Store</b> and <b>Olsen&rsquo;s Market</b> for the essentials</li>
+        <li><b>Quarry Hill Museum</b> on the civic plaza — the rainy-day option</li>
+        <li><b>Willow Creek Park</b> and <b>The Whippoorwill Coffeehouse</b> for the slower afternoons</li>
+      </ul></div>
+      <div class="mapbox"><img src="shots/minimap.jpg" alt=""><span class="mtag">N &uarr;</span><i class="u" style="left:51.39%;top:39.54%"></i><em class="ulab" style="left:51.39%;top:39.54%">University</em><i style="left:68.81%;top:69.38%"></i> <i style="left:51.04%;top:68.60%"></i> <i style="left:56.97%;top:38.53%"></i></div>
+  </section>
+
+
+  <!-- 10 — their HOW WE LAID IT OUT -->
   <section class="slide">
     <div class="bg" style="background-image:url('shots/02-plan.jpg')"></div><div class="scrim"></div>
-    <div class="cap"><div class="kick">Layout &amp; placement</div>
-      <h1>How we laid it out</h1>
+    <div class="cap"><h1>How we laid it out</h1>
       <ul class="pts">
         <li>Streets first: two arterials cross at the campus, 18 named streets fill the grid</li>
         <li>Hospital and EMS share the Wellness Way spine — minutes from anywhere</li>
         <li>Shops run along Commerce Blvd; the K-12 sits inside the neighborhoods</li>
         <li>Every address is within two blocks of a through-street — that&rsquo;s the EMS rule</li>
       </ul></div>
+      <div class="mapbox"><img src="shots/minimap.jpg" alt=""><span class="mtag">N &uarr;</span><i class="u" style="left:51.39%;top:39.54%"></i><em class="ulab" style="left:51.39%;top:39.54%">University</em><i style="left:49.30%;top:47.67%"></i> <i style="left:46.52%;top:36.05%"></i></div>
   </section>
 
+
+  <!-- 11 — their HAVEN DOWNTOWN -->
   <section class="slide">
-    <div class="bg" style="background-image:url('shots/06-park.jpg')"></div><div class="scrim"></div>
-    <div class="cap"><div class="kick">Decision-making</div>
-      <h1>What we traded</h1>
+    <div class="bg" style="background-image:url('shots/11-downtown.jpg')"></div><div class="scrim"></div>
+    <div class="cap"><h1>Haven downtown</h1>
+      <ul class="pts">
+        <li>A walkable core where the campus, the hospital district, and the shops share a few busy blocks</li>
+        <li>Students can go class &rarr; clinic &rarr; coffee without ever needing a car</li>
+        <li>The plaza and the old-town skyline — Pinnacle Health Plaza, Foundry One — give it a real centre</li>
+      </ul></div>
+      <div class="mapbox"><img src="shots/minimap.jpg" alt=""><span class="mtag">N &uarr;</span><i class="u" style="left:51.39%;top:39.54%"></i><em class="ulab" style="left:51.39%;top:39.54%">University</em><i style="left:33.28%;top:29.85%"></i> <i style="left:32.93%;top:30.63%"></i></div>
+  </section>
+
+
+  <!-- 12 — their SCHOOL DISTRICT -->
+  <section class="slide">
+    <div class="bg" style="background-image:url('shots/12-school.jpg')"></div><div class="scrim"></div>
+    <div class="cap"><h1>Havenbrook Unified School District</h1>
+      <ul class="pts">
+        <li>The K-12 anchor for the family neighborhoods on the southwest side</li>
+        <li>Health-science electives and athletics feed straight into the university pipeline</li>
+        <li>Sits inside the neighborhoods it serves — kids walk, not bus</li>
+      </ul></div>
+      <div class="mapbox"><img src="shots/minimap.jpg" alt=""><span class="mtag">N &uarr;</span><i class="u" style="left:51.39%;top:39.54%"></i><em class="ulab" style="left:51.39%;top:39.54%">University</em><i style="left:32.24%;top:71.70%"></i></div>
+  </section>
+
+
+  <!-- 13 — NEW: trade-offs (rubric: explain decisions) -->
+  <section class="slide">
+    <div class="bg" style="background-image:url('shots/08-close.jpg')"></div><div class="scrim"></div>
+    <div class="cap"><h1>What we traded</h1>
       <ul class="pts">
         <li>The two donated sites freed ~$4.5M — so we bought 13 small facilities instead of one mega-campus</li>
         <li>Picked the mall over a second park — the Preserve already covers green space</li>
         <li>Senior care went to the quiet east instead of paying downtown frontage</li>
         <li>Stopped at 26 buildings and banked the leftover <b>$50,000</b> instead of forcing a 27th</li>
       </ul></div>
+      <div class="mapbox"><img src="shots/minimap.jpg" alt=""><span class="mtag">N &uarr;</span><i class="u" style="left:51.39%;top:39.54%"></i><em class="ulab" style="left:51.39%;top:39.54%">University</em><i style="left:50.70%;top:32.95%"></i> <i style="left:49.30%;top:61.62%"></i></div>
   </section>
 
+
+  <!-- 14 — NEW: real budget sheet (replaces the app screenshot) -->
   <section class="slide paper">
     <div class="cap" style="top:5.5%;transform:none;max-width:none">
-      <div class="kick">The budget</div>
       <h1 style="margin-bottom:0">Where the money went</h1>
     </div>
     <div class="sheet">
       <div class="col"><div class="colh">Healthcare <span>$6.25M &middot; 13 sites</span></div>
         <div class="row"><i>03</i><em>Havenbrook General Hospital</em><b>$1.5M</b></div>
         <div class="row"><i>04</i><em>Garrison Medical Transport</em><b>$400k</b></div>
-        <div class="row"><i>05</i><em>County Health Department</em><b>$250k</b></div>
+        <div class="row"><i>05</i><em>Havenbrook County Health Department</em><b>$250k</b></div>
         <div class="row"><i>06</i><em>Meridian Diagnostics Laboratory</em><b>$100k</b></div>
         <div class="row"><i>07</i><em>Stoneleigh Rehabilitation Center</em><b>$750k</b></div>
-        <div class="row"><i>08</i><em>Ashwood Behavioral Health</em><b>$500k</b></div>
+        <div class="row"><i>08</i><em>Ashwood Behavioral Health Center</em><b>$500k</b></div>
         <div class="row"><i>09</i><em>Thacher Student Health Clinic</em><b>$200k</b></div>
         <div class="row"><i>10</i><em>Marigold Dental Studio</em><b>$300k</b></div>
         <div class="row"><i>11</i><em>Parallax Optical</em><b>$300k</b></div>
-        <div class="row"><i>12</i><em>Brookfield Family Physicians</em><b>$400k</b></div>
+        <div class="row"><i>12</i><em>Brookfield Family Physicians &middot; pediatrics &amp; family medicine</em><b>$400k</b></div>
         <div class="row"><i>13</i><em>Innisfree Home Health</em><b>$300k</b></div>
         <div class="row"><i>14</i><em>Halcyon House Senior Living</em><b>$750k</b></div>
         <div class="row"><i>15</i><em>Stillpoint Hospice</em><b>$500k</b></div>
@@ -272,69 +339,67 @@
         <div class="row"><i>18</i><em>Bellwether Pharmacy</em><b>$500k</b></div>
         <div class="row"><i>19</i><em>Quarry Hill Museum</em><b>$500k</b></div>
         <div class="row"><i>20</i><em>Havenbrook Unified School District</em><b>$300k</b></div>
-        <div class="row"><i>21</i><em>The Orchard Table</em><b>$250k</b></div>
+        <div class="row"><i>21</i><em>The Orchard Table &middot; farm-to-table restaurant</em><b>$250k</b></div>
         <div class="row"><i>22</i><em>Willow Creek Park</em><b>$200k</b></div>
         <div class="row"><i>23</i><em>Havenbrook Post Office</em><b>$150k</b></div>
         <div class="row"><i>24</i><em>Olsen&rsquo;s Market</em><b>$100k</b></div>
         <div class="row"><i>25</i><em>The Whippoorwill Coffeehouse</em><b>$100k</b></div>
-        <div class="row"><i>26</i><em>Mariposa Cantina</em><b>$100k</b></div>
-        <div class="row free"><i>01</i><em>University School of Medicine campus</em><b>donated</b></div>
-        <div class="row free"><i>02</i><em>The Preserve housing development</em><b>donated</b></div>
+        <div class="row"><i>26</i><em>Mariposa Cantina &middot; Mexican fast-food grill</em><b>$100k</b></div>
+        <div class="row free"><i>01</i><em>Havenbrook University School of Medicine</em><b>donated</b></div>
+        <div class="row free"><i>02</i><em>The Preserve at Havenbrook &middot; housing development</em><b>donated</b></div>
       </div>
     </div>
     <div class="sheetfoot">
       <span>Spent <b>$9.95M</b> of <b>$10.00M</b> &middot; <b>$50,000</b> left unspent</span>
       <span>26 numbered buildings &middot; every one named</span>
     </div>
+      
   </section>
 
+
+  <!-- 15 — NEW: conclusion -->
   <section class="slide">
-    <div class="bg" style="background-image:url('shots/08-close.jpg')"></div><div class="scrim"></div>
-    <div class="cap"><div class="kick">Conclusion</div>
-      <h1>Why it works</h1>
+    <div class="bg" style="background-image:url('shots/01-cover.jpg')"></div><div class="scrim"></div>
+    <div class="cap"><h1>Why it works</h1>
       <ul class="pts">
-        <li>Students get campus, housing, the clinic, and coffee — no car needed</li>
-        <li>Families get the school, pediatricians, groceries, and the park</li>
-        <li>Seniors get the full care loop — home visits to hospice — on one quiet side of town</li>
+        <li>Students get the campus, the flats, the Thacher Student Health Clinic, and the Whippoorwill — no car needed</li>
+        <li>Families get the school, Brookfield Family Physicians, Olsen&rsquo;s Market, and Willow Creek Park</li>
+        <li>Seniors get the full care loop — Innisfree Home Health visits all the way to Stillpoint Hospice</li>
         <li>And the whole town lands at <b>$9.95M</b>, under the $10M cap</li>
       </ul></div>
+      
   </section>
 
+
+  <!-- 16 — NEW: references -->
   <section class="slide paper">
-    <div class="cap"><div class="kick">References</div>
-      <h1>Where our numbers came from</h1>
-      <ul class="pts" style="margin-top:10px">
-        <li><b>Our Town Healthcare System</b> — project brief + budget sheet (class handout)</li>
-        <li><b>U.S. Census QuickFacts</b> — the 50 / 30 / 20 college-town mix</li>
-        <li><b>American Planning Association</b> — complete-communities siting guidance</li>
-        <li><b>Three.js</b> — we built and rendered the town as a walkable 3D world</li>
+    <div class="cap"><h1>Works Cited</h1>
+      <ul class="refs" style="margin-top:14px">
+        <li>American Planning Association. <i>Complete Communities</i>. American Planning Association, www.planning.org/planning/complete-communities/. Accessed 5 Oct. 2026.</li>
+        <li><i>Our Town Healthcare System: Digital Project Instructions</i>. Class handout, HST Period 4, Oct. 2026.</li>
+        <li>United States Census Bureau. &ldquo;QuickFacts.&rdquo; <i>Census.gov</i>, U.S. Dept. of Commerce, www.census.gov/quickfacts/. Accessed 5 Oct. 2026.</li>
+        <li>&ldquo;Three.js.&rdquo; <i>Three.js</i>, threejs.org. Accessed 5 Oct. 2026.</li>
       </ul></div>
     <div class="side">
-      <b>Abhinav Mishra</b><br><b>Dinesh Yara</b><br><b>Davi Ogland</b>
+      <b>Dinesh Yara</b><br><b>Abhinav Mishra</b><br><b>Davi Ogland</b>
       <div style="margin-top:14px;font-size:11px;letter-spacing:1.6px;text-transform:uppercase">Havenbrook &middot; HST project</div>
     </div>
+      
   </section>
+
 
 </div>
 
-<div class="brand">Havenbrook — a community planned around care</div>
-<div class="cnt" id="cnt"></div>
-<div class="keys">&larr; &rarr; navigate</div>
-<div class="prog"><i id="pi"></i></div>
 <div class="edge l" id="el"></div><div class="edge r" id="er"></div>
 
 <script>
 const slides = [...document.querySelectorAll('.slide')];
-const track = document.getElementById('track'), cnt = document.getElementById('cnt'),
-      pi = document.getElementById('pi');
+const track = document.getElementById('track');
 let i = 0;
 function go(n) {
   i = Math.max(0, Math.min(slides.length - 1, n));
   track.style.transform = `translateX(${-i * 100}%)`;
   slides.forEach((s, k) => s.classList.toggle('cur', k === i));
-  cnt.innerHTML = `${String(i + 1).padStart(2, '0')}<i>/</i>${String(slides.length).padStart(2, '0')}`;
-  pi.style.width = `${(i + 1) / slides.length * 100}%`;
-  document.body.classList.toggle('darkchrome', slides[i].classList.contains('paper'));
 }
 addEventListener('keydown', e => {
   if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') go(i + 1);
