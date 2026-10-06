@@ -112,6 +112,11 @@ const css = `
 #uiDeck .mapbox .mtag { position:absolute; left:7px; top:5px; font-size:8px;
   letter-spacing:1.8px; color:rgba(238,244,246,.8);
   text-shadow:0 1px 4px rgba(0,0,0,.9); }
+/* MLA works-cited entries — hanging indent */
+#uiDeck .refs { list-style:none; margin-top:2px; max-width:560px; }
+#uiDeck .refs li { font-size:12.5px; line-height:1.6; color:var(--sub);
+  padding-left:1.6em; text-indent:-1.6em; margin-bottom:9px; }
+#uiDeck .refs li i { color:var(--ink); }
 `;
 
 export function installDeck() {
@@ -127,8 +132,8 @@ export function installDeck() {
     <div class="cap"></div>
     <div class="mapbox"><img src="deck/shots/minimap.jpg" alt="Town locator map">
       <span class="mtag">N &uarr;</span>
-      <i class="u" style="left:52.25%;top:33.13%"></i>
-      <em class="ulab" style="left:52.25%;top:33.13%">University</em>
+      <i class="u" style="left:51.39%;top:39.54%"></i>
+      <em class="ulab" style="left:51.39%;top:39.54%">University</em>
       <i class="f"></i><i class="f"></i><i class="f"></i></div>
     <div class="meta"><div class="cnt"></div><div class="keys">&#8592; &#8594; navigate &middot; space autoplay</div></div>
     <div class="prog"><i></i></div>
@@ -137,6 +142,7 @@ export function installDeck() {
 
   const cap = root.querySelector('.cap'), cnt = root.querySelector('.cnt'),
         prog = root.querySelector('.prog i'), dip = root.querySelector('.dip'),
+        mapbox = root.querySelector('.mapbox'),
         fdots = [...root.querySelectorAll('.mapbox i.f')];
 
   const numd = BUILDINGS.filter(b => b.num);
@@ -261,7 +267,7 @@ export function installDeck() {
         'Senior care went to the quiet east instead of paying downtown frontage',
         'Stopped at 26 buildings and banked the leftover <b>$50,000</b> instead of forcing a 27th'] },
     /* 14 — THE BUDGET: straight overhead while the ledger runs */
-    { shots: [{ cam: [60, 1250, 640, 0, 0, -20], dur: 10 }], dark: true, hold: 26000,
+    { shots: [{ cam: [60, 1250, 640, 0, 0, -20], dur: 10 }], dark: true, hold: 26000, nomap: true,
       kick: 'The budget', title: 'Where the money went', sheet: true },
     /* 15 — WHY IT WORKS: back to a sweeping aerial */
     { shots: [{ cam: [620, 540, 720, -60, 0, -60], dur: 9 },
@@ -270,14 +276,14 @@ export function installDeck() {
         'Students get the campus, the flats, the Thacher Student Health Clinic, and the Whippoorwill — no car needed',
         'Families get the school, Brookfield Family Physicians, Olsen\u2019s Market, and Willow Creek Park',
         'Seniors get the full care loop — Innisfree Home Health visits all the way to Stillpoint Hospice',
-        `And the whole town lands at <b>${money(spent)}</b>, under the $10M cap`] },
-    /* 16 — REFERENCES */
-    { shots: [{ cam: [620, 520, 690, -60, 0, -70], dur: 9 }], dark: true, hold: 18000,
-      kick: 'References', title: 'Where our numbers came from', pts: [
-        'Our Town Healthcare System — project brief + budget sheet (class handout)',
-        'U.S. Census QuickFacts — the 50 / 30 / 20 college-town mix',
-        'American Planning Association — complete-communities siting guidance',
-        'Three.js — we built and rendered the town as a walkable 3D world'],
+        `And the whole town lands at <b>${money(spent)}</b>, under the $10M cap`], nomap: true },
+    /* 16 — WORKS CITED (MLA format) */
+    { shots: [{ cam: [620, 520, 690, -60, 0, -70], dur: 9 }], dark: true, hold: 18000, nomap: true,
+      kick: 'References', title: 'Works Cited', refs: [
+        'American Planning Association. <i>Complete Communities</i>. American Planning Association, www.planning.org/planning/complete-communities/. Accessed 5 Oct. 2026.',
+        '<i>Our Town Healthcare System: Digital Project Instructions</i>. Class handout, HST Period 4, Oct. 2026.',
+        'United States Census Bureau. \u201cQuickFacts.\u201d <i>Census.gov</i>, U.S. Dept. of Commerce, www.census.gov/quickfacts/. Accessed 5 Oct. 2026.',
+        '\u201cThree.js.\u201d <i>Three.js</i>, threejs.org. Accessed 5 Oct. 2026.'],
       team: 'Dinesh Yara · Abhinav Mishra · Davi Ogland · HST · Period 4' },
   ];
 
@@ -290,6 +296,8 @@ export function installDeck() {
     const bits = [];
     if (s.pts) {
       bits.push(`<ul class="pts">${s.pts.map(p => `<li>${p}</li>`).join('')}</ul>`);
+    } else if (s.refs) {
+      bits.push(`<ul class="refs">${s.refs.map(r => `<li>${r}</li>`).join('')}</ul>`);
     } else if (s.sheet) {
       const mk = cat => numd.filter(b => b.cat === cat)
         .map(b => `<div class="row"><i>${String(b.num).padStart(2, '0')}</i><em>${b.name}${KIND[b.id] ? ' · ' + KIND[b.id] : ''}</em><b>${fmt(b.cost)}</b></div>`).join('');
@@ -331,16 +339,18 @@ export function installDeck() {
       [{ opacity: 0 }, { opacity: .62, offset: .42 }, { opacity: 0 }],
       { duration: 900, easing: 'ease-in-out' });
     flyShots(s);
-    /* locator dots: one per unique place this slide's camera looks at.
-       ortho map covers x ±890, z ±800 layout units — see .verify/minimap-shot.mjs */
+    /* locator dots: one per unique place this slide's camera looks at. The ortho
+       map covers ±890×±800 WORLD units — layout coords scale by __ws (.62). */
+    mapbox.style.display = s.nomap ? 'none' : '';
+    const w2 = W();
     const spots = [...new Map((s.shots || []).map(L =>
       [L.cam[3] + ',' + L.cam[5], [L.cam[3], L.cam[5]]])).values()];
     fdots.forEach((d, k) => {
       const t = spots[k];
       if (!t) { d.style.opacity = 0; return; }
       d.style.opacity = 1;
-      d.style.left = ((t[0] + 890) / 1780 * 100).toFixed(2) + '%';
-      d.style.top = ((t[1] + 800) / 1600 * 100).toFixed(2) + '%';
+      d.style.left = ((t[0] * w2 + 890) / 1780 * 100).toFixed(2) + '%';
+      d.style.top = ((t[1] * w2 + 800) / 1600 * 100).toFixed(2) + '%';
     });
     cap.classList.remove('in'); cap.classList.add('out');
     clearTimeout(capTimer);
